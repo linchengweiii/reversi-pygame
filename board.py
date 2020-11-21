@@ -1,4 +1,5 @@
 import pygame
+from utils import ValueOutOfRange
 
 class Board(object):
     BG_COLOR = (46, 189, 87) # GREEN
@@ -37,6 +38,18 @@ class Board(object):
         for i, r in enumerate(self.rows):
             for j, c in enumerate(self.cols):
                 self.enum[r+c] = i*len(self.rows)+j
+
+    def pos2label(self, pos):
+        if (pos[0] < 0.1 * self.side_length or
+            pos[0] > 0.9 * self.side_length or
+            pos[1] < 0.1 * self.side_length or
+            pos[1] > 0.9 * self.side_length):
+            raise ValueOutOfRange()
+
+        pos = [p - 0.1 * self.side_length for p in pos]
+        x = int(pos[0] // (0.8 * self.side_length / len(self.cols)))
+        y = int(pos[1] // (0.8 * self.side_length / len(self.rows)))
+        return self.rows[x]+self.cols[y]
 
     def draw_board(self, screen):
         self.board_size = (self.side_length, self.side_length)
