@@ -57,8 +57,8 @@ class Board(object):
 
         translation = (0.9 * self.side_length, 0)
         top_left = self.top_left
-        top_right = tuple([sum(x) for x in zip(top_left, translation)])
-        bottom_left = tuple([sum(x) for x in zip(top_left, reversed(translation))])
+        top_right = self._element_wise_addition(top_left, translation)
+        bottom_left = self._element_wise_addition(top_left, reversed(translation))
 
         pygame.draw.rect(screen, self.bg_color, (top_left, self.board_size))
         pygame.draw.rect(screen, self.border_color, (top_left, self.border_size))
@@ -68,22 +68,31 @@ class Board(object):
 
         for i, row in enumerate([''] + self.rows):
             x = 0.1 * self.side_length + 0.8 * i / len(self.rows) * self.side_length
-            pygame.draw.line(screen, self.line_color, (x, 0.1 * self.side_length), (x, 0.9 * self.side_length))
+            start = self._element_wise_addition(top_left, (x, 0.1 * self.side_length))
+            end = self._element_wise_addition(top_left, (x, 0.9 * self.side_length))
+            pygame.draw.line(screen, self.line_color, start, end)
 
-            self._draw_label(screen, row, (x - 0.05 * self.side_length, 0.05 * self.side_length))
+            pos = self._element_wise_addition(top_left, (x - 0.05 * self.side_length, 0.05 * self.side_length))
+            self._draw_label(screen, row, pos)
 
 
         for i , col in enumerate([''] + self.cols):
             y = 0.1 * self.side_length + 0.8 * i / len(self.cols) * self.side_length
-            pygame.draw.line(screen, self.line_color, (0.1 * self.side_length, y), (0.9 * self.side_length, y))
+            start = self._element_wise_addition(top_left, (0.1 * self.side_length, y))
+            end = self._element_wise_addition(top_left, (0.9 * self.side_length, y))
+            pygame.draw.line(screen, self.line_color, start, end)
 
-            self._draw_label(screen, col, (0.05 * self.side_length, y - 0.05 * self.side_length))
+            pos = self._element_wise_addition(top_left, (0.05 * self.side_length, y - 0.05 * self.side_length))
+            self._draw_label(screen, col, pos)
+
+    def _element_wise_addition(self, x, y):
+        return tuple([sum(i) for i in zip(x, y)])
 
 
-    def _draw_label(self, screen, text_str, position):
+    def _draw_label(self, screen, text_str, pos):
         text =  self.font.render(text_str, True, self.text_color)
         text_rect = text.get_rect()
-        text_rect.center = position
+        text_rect.center = pos
         screen.blit(text, text_rect)
 
 
