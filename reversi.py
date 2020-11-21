@@ -66,8 +66,12 @@ class Reversi(PyGameWrapper):
         return self.actions
 
     def _is_available(self, label):
-        # TODO
-        return True
+        status = self.get_game_state()
+        block = self.board.enum[label]
+        if status[block] == 0:
+            # TODO
+            return True
+        return False
 
     def get_game_state(self):
         return self.board.status
