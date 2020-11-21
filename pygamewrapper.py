@@ -1,4 +1,5 @@
 import pygame
+from pygame.constants import MOUSEBUTTONUP, MOUSEBUTTONDOWN, MOUSEMOTION
 
 class PyGameWrapper(object):
     def __init__(self, width, height, actions={}):
@@ -11,10 +12,8 @@ class PyGameWrapper(object):
         self.lives = 0
         self.screen = None
         self.clock = None
-        self.allowed_fps = None
-        self.NOOP = None
 
-    def _setup(self):
+    def setup(self):
         """
         Setups up the pygame env, the display and game clock.
         """
@@ -22,12 +21,26 @@ class PyGameWrapper(object):
         self.screen = pygame.display.set_model(self.get_screen_dims(), 0, 32)
         self.clock = pygame.time.Clock()
 
-    def _draw_frame(self, draw_screen):
+    def draw_frame(self, draw_screen):
         """
         Decides if the screen will be drawn.
         """
         if draw_screen:
             pygame.display.update()
+
+    def set_action(self, pos, last_pos, event_type):
+        """
+        Push the actions to the pygame event qeueu.
+        """
+        if event_type == MOUSEMOTION:
+            mm = pygame.event.Event(MOUSEMOTION, {'pos': pos})
+            pygame.event.post(mm)
+
+        if event_type == MOUSEBUTTONDOWN:
+            md = pygame.event.Event(MOUSEBUTTONDOWN, {'pos': pos})
+            mu = pygame.event.Event(MOUSEBUTTONUP, {'pos': last_pos})
+            pygame.event.pos(md)
+            pygame.event.pos(mu)
 
     def get_game_state(self):
         """
