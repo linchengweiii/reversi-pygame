@@ -31,15 +31,17 @@ class ReversiBoard(Board):
             else:
                 n_row = key // len(self.rows)
                 n_col = key % len(self.rows)
-                position = (0.1 * self.side_length + 0.8 * (n_col + 0.5) / len(self.cols) * self.side_length,
-                            0.1 * self.side_length + 0.8 * (n_row + 0.5) / len(self.rows) * self.side_length)
-                pygame.draw.circle(screen, self.status2color[self.status[key]], position, 0.35 * self.block_size)
+                pos = (self.top_left[0] + 0.1 * self.side_length + 0.8 * (n_col + 0.5) / len(self.cols) * self.side_length,
+                       self.top_left[1] + 0.1 * self.side_length + 0.8 * (n_row + 0.5) / len(self.rows) * self.side_length)
+                pygame.draw.circle(screen, self.status2color[self.status[key]], pos, 0.35 * self.block_size)
 
 if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode((800, 600), 0, 32)
     board = ReversiBoard(600, (100, 0))
     board.draw_board(screen)
+    board.update('1A', -1)
+    board.draw_pieces(screen)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
