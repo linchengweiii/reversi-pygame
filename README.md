@@ -1,1 +1,3 @@
 # Reversi Pygame Implemetation
+
+## Struture
