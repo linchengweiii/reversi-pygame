@@ -3,7 +3,7 @@ import sys
 import numpy as np
 from pygamewrapper import PyGameWrapper
 from reversi_board import ReversiBoard
-from utils import ValueOutOfRange
+import utils
 
 class Reversi(PyGameWrapper):
     """
@@ -42,7 +42,7 @@ class Reversi(PyGameWrapper):
                     if self._is_available(label):
                         self.last_label = label
                         self.board.update(label, 2)
-                except ValueOutOfRange:
+                except utils.ValueOutOfRange:
                     pass
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -57,7 +57,7 @@ class Reversi(PyGameWrapper):
 
         if (pos[0] < 0 or pos[0] > self.side_length or
             pos[1] < 0 or pos[1] > self.side_length):
-            raise ValueOutOfRange()
+            raise utils.ValueOutOfRange()
 
         return self.board.pos2label(pos)
 
@@ -68,9 +68,26 @@ class Reversi(PyGameWrapper):
     def _is_available(self, label):
         status = self.get_game_state()
         block = self.board.enum[label]
+        row = int(block // len(self.board.rows))
+        col = int(block % len(self.board.rows))
         if status[block] == 0:
-            # TODO
-            return True
+            for i in range(-1, 2):
+                if row+i < 0 or row+i >= len(self.board.rows): continue
+
+                for j in range(-1, 2):
+                    if col+j < 0 or col+j >= len(self.board.cols): continue
+
+                    label = self.board.rows[row+i] + self.board.cols[col+j]
+                    if status[self.board.enum[label]] == -1 * self.cur_player:
+                        x, y = i, j
+                        while (row+x >= 0 and row+x < len(self.board.rows) and
+                               col+y >= 0 and col+y < len(self.board.cols)):
+                            label = self.board.rows[row+x] + self.board.cols[col+y]
+                            if status[self.board.enum[label]] == self.cur_player:
+                                return True
+
+                            x, y = utils.element_wise_addition((x, y), (i, j))
+
         return False
 
     def get_game_state(self):
@@ -99,7 +116,7 @@ class Reversi(PyGameWrapper):
 
 if __name__ == '__main__':
     pygame.init()
-    game = Reversi(width=600, height=600)
+    game = Reversi(width=800, height=600)
     game.screen = pygame.display.set_mode(game.get_screen_dims(), 0, 32)
     game.clock = pygame.time.Clock()
     game.rng = np.random.RandomState(24)
