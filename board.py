@@ -49,7 +49,7 @@ class Board(object):
         pos = [p - 0.1 * self.side_length for p in pos]
         x = int(pos[0] // (0.8 * self.side_length / len(self.cols)))
         y = int(pos[1] // (0.8 * self.side_length / len(self.rows)))
-        return self.rows[x]+self.cols[y]
+        return self.rows[y]+self.cols[x]
 
     def draw_board(self, screen):
         self.board_size = (self.side_length, self.side_length)
