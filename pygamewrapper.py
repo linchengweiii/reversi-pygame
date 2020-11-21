@@ -18,7 +18,7 @@ class PyGameWrapper(object):
         Setups up the pygame env, the display and game clock.
         """
         pygame.init()
-        self.screen = pygame.display.set_model(self.get_screen_dims(), 0, 32)
+        self.screen = pygame.display.set_mode(self.get_screen_dims(), 0, 32)
         self.clock = pygame.time.Clock()
 
     def draw_frame(self, draw_screen):
