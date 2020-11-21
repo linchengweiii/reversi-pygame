@@ -3,6 +3,7 @@ import sys
 import numpy as np
 from pygamewrapper import PyGameWrapper
 from reversi_board import ReversiBoard
+from utils import ValueOutOfRange
 
 class Reversi(PyGameWrapper):
     """
@@ -13,9 +14,9 @@ class Reversi(PyGameWrapper):
     """
     def __init__(self, width=600, height=600):
         screen_dim = (width, height)
-        side_length = min(width, height)
+        self.side_length = min(width, height)
         self.top_left = (0, 0)
-        self.board = ReversiBoard(side_length, self.top_left)
+        self.board = ReversiBoard(self.side_length, self.top_left)
 
         actions = self.board.enum
         super().__init__(width, height, actions=actions)
@@ -31,9 +32,12 @@ class Reversi(PyGameWrapper):
             elif event.type == pygame.MOUSEMOTION:
                 # TODO
                 # show available or not
-                label = self.pos2label(event.pos)
-                if self._is_available(label):
-                    self.board.update(label, 2)
+                try:
+                    label = self.pos2label(event.pos)
+                    if self._is_available(label):
+                        self.board.update(label, 2)
+                except ValueOutOfRange:
+                    print ('Value out of range')
                 # self.board.update()
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -45,8 +49,12 @@ class Reversi(PyGameWrapper):
 
     def pos2label(self, pos):
         pos = tuple([p - tl for p, tl in zip(pos, self.top_left)])
-        return self.board.pos2label(pos)
 
+        if (pos[0] < 0 or pos[0] > self.side_length or
+            pos[1] < 0 or pos[1] > self.side_length):
+            raise ValueOutOfRange()
+
+        return self.board.pos2label(pos)
 
     def get_available_actions(self):
         # TODO
@@ -76,6 +84,7 @@ class Reversi(PyGameWrapper):
 
     def step(self, dt):
         self._handle_player_events()
+        # self.board.draw_board(self.screen)
         self.board.draw_pieces(self.screen)
 
 if __name__ == '__main__':
