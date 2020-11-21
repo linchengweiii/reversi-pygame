@@ -12,7 +12,8 @@ class Reversi(PyGameWrapper):
             0: no piece
             1: light side
     """
-    def __init__(self, width=600, height=600):
+    BG_COLOR = (255, 255, 255)
+    def __init__(self, width=600, height=600, bg_color=BG_COLOR):
         screen_dim = (width, height)
         self.side_length = min(width, height)
         self.top_left = (0, 0)
@@ -21,7 +22,8 @@ class Reversi(PyGameWrapper):
         actions = self.board.enum
         super().__init__(width, height, actions=actions)
 
-        self.BG_COLOR = (255, 255, 255)
+        self.bg_color = bg_color
+        self.last_label = '1A'
 
     def _handle_player_events(self):
         for event in pygame.event.get():
@@ -33,11 +35,13 @@ class Reversi(PyGameWrapper):
                 # TODO
                 # show available or not
                 try:
+                    self.board.update(self.last_label, 0)
                     label = self.pos2label(event.pos)
                     if self._is_available(label):
+                        self.last_label = label
                         self.board.update(label, 2)
                 except ValueOutOfRange:
-                    print ('Value out of range')
+                    pass
                 # self.board.update()
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -75,6 +79,7 @@ class Reversi(PyGameWrapper):
         for s in init_status:
             self.board.update(*s)
 
+        self.screen.fill(self.bg_color)
         self.board.draw_board(self.screen)
         self.board.draw_pieces(self.screen)
 
@@ -84,7 +89,7 @@ class Reversi(PyGameWrapper):
 
     def step(self, dt):
         self._handle_player_events()
-        # self.board.draw_board(self.screen)
+        self.board.draw_board(self.screen)
         self.board.draw_pieces(self.screen)
 
 if __name__ == '__main__':
