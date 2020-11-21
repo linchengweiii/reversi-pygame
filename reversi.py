@@ -14,8 +14,8 @@ class Reversi(PyGameWrapper):
     def __init__(self, width=600, height=600):
         screen_dim = (width, height)
         side_length = min(width, height)
-        top_left = (0, 0)
-        self.board = ReversiBoard(side_length, top_left)
+        self.top_left = (0, 0)
+        self.board = ReversiBoard(side_length, self.top_left)
 
         actions = self.board.enum
         super().__init__(width, height, actions=actions)
@@ -44,8 +44,8 @@ class Reversi(PyGameWrapper):
                 # self.board.update()
 
     def pos2label(self, pos):
-        # TODO
-        return ('1A')
+        pos = tuple([p - tl for p, tl in zip(pos, self.top_left)])
+        return self.board.pos2label(pos)
 
 
     def get_available_actions(self):
