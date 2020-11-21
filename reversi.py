@@ -16,7 +16,10 @@ class Reversi(PyGameWrapper):
     def __init__(self, width=600, height=600, bg_color=BG_COLOR):
         screen_dim = (width, height)
         self.side_length = min(width, height)
-        self.top_left = (0, 0)
+        if width >= height:
+            self.top_left = (0.5 * (width - height), 0)
+        else:
+            self.top_left = (0, 0.5 * (height - width))
         self.board = ReversiBoard(self.side_length, self.top_left)
 
         actions = self.board.enum
@@ -24,6 +27,7 @@ class Reversi(PyGameWrapper):
 
         self.bg_color = bg_color
         self.last_label = '1A'
+        self.cur_player = -1
 
     def _handle_player_events(self):
         for event in pygame.event.get():
@@ -32,8 +36,6 @@ class Reversi(PyGameWrapper):
                 sys.exit()
 
             elif event.type == pygame.MOUSEMOTION:
-                # TODO
-                # show available or not
                 try:
                     self.board.update(self.last_label, 0)
                     label = self.pos2label(event.pos)
@@ -42,7 +44,6 @@ class Reversi(PyGameWrapper):
                         self.board.update(label, 2)
                 except ValueOutOfRange:
                     pass
-                # self.board.update()
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # TODO
