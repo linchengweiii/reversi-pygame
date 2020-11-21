@@ -38,6 +38,13 @@ class Board(object):
             for j, c in enumerate(self.cols):
                 self.enum[r+c] = i*len(self.rows)+j
 
+    def pos2label(self, pos):
+        pos = [p - 0.1 * self.side_length for p in pos]
+        block_width = pos[0] // (0.8 * self.side_length / len(self.cols))
+        block_height = pos[1] // (0.8 * self.side_length / len(self.cols))
+        print (block_width, block_height)
+        return '1A'
+
     def draw_board(self, screen):
         self.board_size = (self.side_length, self.side_length)
         self.border_size = (0.1 * self.side_length, self.side_length) 
