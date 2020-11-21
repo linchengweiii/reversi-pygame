@@ -41,9 +41,9 @@ class Board(object):
 
     def pos2label(self, pos):
         if (pos[0] < 0.1 * self.side_length or
-            pos[0] > 0.9 * self.side_length or
+            pos[0] >= 0.9 * self.side_length or
             pos[1] < 0.1 * self.side_length or
-            pos[1] > 0.9 * self.side_length):
+            pos[1] >= 0.9 * self.side_length):
             raise ValueOutOfRange()
 
         pos = [p - 0.1 * self.side_length for p in pos]
