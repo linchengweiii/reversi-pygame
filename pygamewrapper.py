@@ -8,7 +8,7 @@ class PyGameWrapper(object):
         self.screen_dim = (width, height)
         self.actions = actions
 
-        self.scores = 0.0
+        self.scores = {}
         self.lives = 0
         self.screen = None
         self.clock = None
@@ -91,7 +91,7 @@ class PyGameWrapper(object):
         """
         self.init()
 
-    def get_score(self):
+    def get_scores(self):
         """
         Return the current score of the game.
 
@@ -101,7 +101,7 @@ class PyGameWrapper(object):
             The current reward the agent has received since the last init() or reset() call.
 
         """
-        return self.score
+        return self.scores
 
     def game_over(self):
         """
