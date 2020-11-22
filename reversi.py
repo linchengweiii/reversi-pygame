@@ -3,10 +3,7 @@ import sys
 import numpy as np
 from pygamewrapper import PyGameWrapper
 from reversi_board import ReversiBoard
-<<<<<<< HEAD
 import utils
-=======
->>>>>>> af3310cd8727f4fa7b9129aca99064a361620e50
 
 class Reversi(PyGameWrapper):
     """
@@ -54,9 +51,7 @@ class Reversi(PyGameWrapper):
                 try:
                     label = self.pos2label(event.pos)
                     if self._is_available(label):
-                        # TODO
-
-                        self.board.update(label, self.cur_player)
+                        self._flip(label)
                         if len(self.get_available_actions()) > 0:
                             self.cur_player *= -1
 
@@ -71,6 +66,32 @@ class Reversi(PyGameWrapper):
             raise utils.ValueOutOfRange()
 
         return self.board.pos2label(pos)
+
+    def _flip(self, label):
+        status = self.get_game_state()
+        self.board.update(label, self.cur_player)
+        row = int(self.board.enum[label] // len(self.board.rows))
+        col = int(self.board.enum[label] % len(self.board.rows))
+        for i in range(-1, 2):
+            if row+i < 0 or row+i >= len(self.board.rows): continue
+
+            for j in range(-1, 2):
+                if col+j < 0 or col+j >= len(self.board.cols): continue
+
+                label = self.board.rows[row+i] + self.board.cols[col+j]
+                if status[self.board.enum[label]] == -1 * self.cur_player:
+                    x, y = [i], [j]
+                    while 0 <= row+x[-1] < len(self.board.rows) and 0 <= col+y[-1] < len(self.board.cols):
+                        label = self.board.rows[row+x[-1]] + self.board.cols[col+y[-1]]
+                        if status[self.board.enum[label]] == self.cur_player:
+                            for r, c in zip(x, y):
+                                self.board.update(self.board.rows[row+r]+self.board.cols[col+c], self.cur_player)
+                            break
+
+                        x.append(x[-1] + i)
+                        y.append(y[-1] + j)
+
+
 
     def get_available_actions(self):
         avail = []
