@@ -36,7 +36,7 @@ class PyGameWrapper(object):
             e = pygame.event.Event(MOUSEMOTION, {'pos': pos})
             pygame.event.post(e)
 
-        if event_type == MOUSEBUTTONDOWN:
+        if event_type == USEREVENT:
             e = pygame.event.Event(USEREVENT, {'pos': pos})
             pygame.event.post(e)
 
