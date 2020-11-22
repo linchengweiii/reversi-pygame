@@ -66,24 +66,24 @@ class Board(object):
         pygame.draw.rect(screen, self.border_color, (top_left, tuple(reversed(self.border_size))))
         pygame.draw.rect(screen, self.border_color, (bottom_left, tuple(reversed(self.border_size))))
 
-        for i, row in enumerate([''] + self.rows):
-            x = 0.1 * self.side_length + 0.8 * i / len(self.rows) * self.side_length
+        for i, col in enumerate([''] + self.cols):
+            x = 0.1 * self.side_length + 0.8 * i / len(self.cols) * self.side_length
             start = self._element_wise_addition(top_left, (x, 0.1 * self.side_length))
             end = self._element_wise_addition(top_left, (x, 0.9 * self.side_length))
             pygame.draw.line(screen, self.line_color, start, end)
 
             pos = self._element_wise_addition(top_left, (x - 0.05 * self.side_length, 0.05 * self.side_length))
-            self._draw_label(screen, row, pos)
+            self._draw_label(screen, col, pos)
 
 
-        for i , col in enumerate([''] + self.cols):
-            y = 0.1 * self.side_length + 0.8 * i / len(self.cols) * self.side_length
+        for i , row in enumerate([''] + self.rows):
+            y = 0.1 * self.side_length + 0.8 * i / len(self.rows) * self.side_length
             start = self._element_wise_addition(top_left, (0.1 * self.side_length, y))
             end = self._element_wise_addition(top_left, (0.9 * self.side_length, y))
             pygame.draw.line(screen, self.line_color, start, end)
 
             pos = self._element_wise_addition(top_left, (0.05 * self.side_length, y - 0.05 * self.side_length))
-            self._draw_label(screen, col, pos)
+            self._draw_label(screen, row, pos)
 
     def _element_wise_addition(self, x, y):
         return tuple([sum(i) for i in zip(x, y)])
