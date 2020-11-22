@@ -180,12 +180,28 @@ class Reversi(PyGameWrapper):
         return True
 
     def step(self, dt):
-        self._handle_player_events()
-        self._update_scores()
-        self.board.draw_board(self.screen)
-        self.board.draw_pieces(self.screen)
-        self._display_scores()
-        self._display_current_palyer()
+        try:
+            self._handle_player_events()
+            self._update_scores()
+            self.board.draw_board(self.screen)
+            self.board.draw_pieces(self.screen)
+            self._display_scores()
+            self._display_current_palyer()
+
+        except utils.ValueOutOfRange:
+            raise utils.ValueOutOfRange()
+
+        except utils.InvalidAction:
+            raise utils.InvalidAction()
+
+        except utils.NoAvailableAction:
+            self._update_scores()
+            self.board.draw_board(self.screen)
+            self.board.draw_pieces(self.screen)
+            self._display_scores()
+            self._display_current_palyer()
+            raise utils.NoAvailableAction()
+
 
     def _display_scores(self):
         text_colors = [(0, 0, 0), (255, 255, 255)]
