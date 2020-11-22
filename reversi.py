@@ -3,7 +3,10 @@ import sys
 import numpy as np
 from pygamewrapper import PyGameWrapper
 from reversi_board import ReversiBoard
+<<<<<<< HEAD
 import utils
+=======
+>>>>>>> af3310cd8727f4fa7b9129aca99064a361620e50
 
 class Reversi(PyGameWrapper):
     """
