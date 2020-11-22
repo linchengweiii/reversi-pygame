@@ -48,7 +48,7 @@ for i in range(1):
                 try:
                     reward1 = run_agent(agent1, reward1, obs)
                     break
-                except utils.ValueOutOfRange:
+                except utils.ValueOutOfRange, InvalidAction:
                     print("invalid action! retry!")
         else:
             print("white turn")
@@ -57,7 +57,7 @@ for i in range(1):
                 try:
                     reward2 = run_agent(agent2, reward2, obs)
                     break
-                except utils.ValueOutOfRange:
+                except utils.ValueOutOfRange, utils.InvalidAction:
                     print("invalid action! retry!")    
         run_iter += 1 
     score = game.getScore()
