@@ -40,7 +40,8 @@ class BaseAgent():
             (x, y) represents position, where (0, 0) mean top left. 
                 x: go right
                 y: go down
-
+        event_type:
+            non human agent uses pygame.USEREVENT
         """
 
         raise NotImplementError("You didn't finish your step function. Please override step function of BaseAgent!")
@@ -49,15 +50,17 @@ class HumanAgent(BaseAgent):
     def step(self, reward, obs):
         while(1):
             for event in pygame.event.get():
-                if event.type == pygame.MOUSEMOTION or event.type == pygame.MOUSEBUTTONDOWN:
-                    return event.pos
+                if event.type == pygame.MOUSEMOTION:
+                    return event.pos, event.type
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    return event.pos, pygame.USEREVENT
 
 
 class RandomAgent(BaseAgent):
     def step(self, reward, obs):
         """
         """
-        return (self.col_offset + random.randint(0, self.cols_n-1) * self.block_len, self.row_offset + random.randint(0, self.rows_n-1) * self.block_len)
+        return (self.col_offset + random.randint(0, self.cols_n-1) * self.block_len, self.row_offset + random.randint(0, self.rows_n-1) * self.block_len), pygame.USEREVENT
 
 if __name__ == "__main__":
     agent = RandomAgent()

@@ -5,6 +5,7 @@ import sys
 import pygame
 from pygamewrapper import PyGameWrapper
 from pygame.constants import MOUSEBUTTONUP, MOUSEBUTTONDOWN, MOUSEMOTION
+import copy
 
 class Environment(object):
     """
@@ -276,7 +277,7 @@ class Environment(object):
                 "Was asked to return state vector for game that does not support it!")
 
 
-    def act(self, action, event_type=pygame.USEREVENT):
+    def act(self, action, event_type):
         """
         Perform an action on the game. We lockstep frames with actions. If act is not called the game will not run.
 
@@ -294,7 +295,7 @@ class Environment(object):
             Returns the reward that the agent has accumlated while performing the action.
 
         """
-        return [self._one_step_act(action, event_type) for i in range(self.frame_skip)]
+        return self._one_step_act(action, event_type) # for i in range(self.frame_skip)
 
     def _draw_frame(self):
         """
@@ -337,7 +338,7 @@ class Environment(object):
         """
         Returns the reward the agent has gained as the difference between the last action and the current one.
         """
-        reward = {key: self.game.get_scores()[key] - self.previous_scores.get(key, 0) for key in self.game.get_scores()}
-        self.previous_scores = self.game.get_scores()
-
+        sc = copy.deepcopy(self.game.get_scores())
+        reward = {key: sc[key] - self.previous_scores.get(key, 2) for key in sc}
+        self.previous_scores = sc
         return reward
