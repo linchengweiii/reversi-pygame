@@ -44,13 +44,14 @@ class BaseAgent():
             event.type: [MOUSEBUTTONUP, MOUSEBUTTONDOWN, MOUSEMOTION] (non human agent only uses MOUSEBUTTONDOWN)
         """
 
-        raise NotImplementError("You didn't finish your step function")
+        raise NotImplementError("You didn't finish your step function. Please override step function of BaseAgent!")
     
 class HumanAgent(BaseAgent):
     def step(self, reward, obs):
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEMOTION or event.type == pygame.MOUSEBUTTONDOWN:
-                return event.pos, event.type
+        while(1):
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEMOTION or event.type == pygame.MOUSEBUTTONDOWN:
+                    return event.pos, event.type
 
 
 class RandomAgent(BaseAgent):
