@@ -58,7 +58,9 @@ class RandomAgent(BaseAgent):
     def step(self, reward, obs):
         """
         """
-        return (self.col_offset + random.randint(0, self.cols_n-1) * self.block_len, self.row_offset + random.randint(0, self.rows_n-1) * self.block_len)
+        return [(self.col_offset + random.randint(0, self.cols_n-1) * self.block_len, 
+                self.row_offset + random.randint(0, self.rows_n-1) * self.block_len),
+                event.type]
 
 if __name__ == "__main__":
     agent = RandomAgent()
