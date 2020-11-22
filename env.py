@@ -276,7 +276,7 @@ class Environment(object):
                 "Was asked to return state vector for game that does not support it!")
 
 
-    def act(self, action, event_type):
+    def act(self, action, event_type=pygame.USEREVENT):
         """
         Perform an action on the game. We lockstep frames with actions. If act is not called the game will not run.
 
