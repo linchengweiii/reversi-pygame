@@ -5,6 +5,7 @@ from env import Environment
 from reversi_board import ReversiBoard
 import pygame
 import utils
+import time
 
 width = 600
 height = 600
@@ -29,8 +30,8 @@ play_ground.display_screen = True
 
 
 def run_agent(agent: BaseAgent, reward: dict, obs: dict):
-    action = agent.step(reward, obs)
-    reward = play_ground.act(action) # reward after an action
+    action, event_type = agent.step(reward, obs)
+    reward = play_ground.act(action, event_type) # reward after an action
     return reward
 
 # start our loop
@@ -47,25 +48,34 @@ for i in range(1):
             while(1):
                 try:
                     reward1 = run_agent(agent1, reward1, obs)
-                    break
+                    #print(reward1)
+                    if reward1[-1] != 0:
+                        break
                 except (utils.ValueOutOfRange, utils.InvalidAction) as e:
-                    print("invalid action! retry!")
+                    # print("invalid action! retry!")
+                    pass
                 except utils.NoAvailableAction:
                     print("ignore black action")
+                    
                     break
         else:
             print("white turn")
             obs = play_ground.get_game_state()
             while(1):
                 try:
+                    time.sleep(0.1)
                     reward2 = run_agent(agent2, reward2, obs)
-                    break
+                    #print(reward2)
+                    if reward2[1] != 0:
+                        break
                 except (utils.ValueOutOfRange, utils.InvalidAction) as e:
-                    print("invalid action! retry!")  
+                    # print("invalid action! retry!") 
+                    pass
                 except utils.NoAvailableAction:
                     print("ignore white action")
+                    
                     break  
         run_iter += 1 
-    score = game.getScore()
+    #score = game.getScore()
 
 
