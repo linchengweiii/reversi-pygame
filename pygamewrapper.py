@@ -1,5 +1,5 @@
 import pygame
-from pygame.constants import MOUSEBUTTONUP, MOUSEBUTTONDOWN, MOUSEMOTION
+from pygame.constants import USEREVENT, MOUSEBUTTONDOWN, MOUSEMOTION
 
 class PyGameWrapper(object):
     def __init__(self, width, height, actions={}):
@@ -33,14 +33,12 @@ class PyGameWrapper(object):
         Push the actions to the pygame event qeueu.
         """
         if event_type == MOUSEMOTION:
-            mm = pygame.event.Event(MOUSEMOTION, {'pos': pos})
-            pygame.event.post(mm)
+            e = pygame.event.Event(MOUSEMOTION, {'pos': pos})
+            pygame.event.post(e)
 
         if event_type == MOUSEBUTTONDOWN:
-            md = pygame.event.Event(MOUSEBUTTONDOWN, {'pos': pos})
-            mu = pygame.event.Event(MOUSEBUTTONUP, {'pos': last_pos})
-            pygame.event.pos(md)
-            pygame.event.pos(mu)
+            e = pygame.event.Event(USEREVENT, {'pos': pos})
+            pygame.event.post(e)
 
     def get_game_state(self):
         """
