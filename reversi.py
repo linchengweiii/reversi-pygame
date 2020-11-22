@@ -25,13 +25,22 @@ class Reversi(PyGameWrapper):
         pygame.font.init()
         self.board = ReversiBoard(self.side_length, self.top_left)
 
-        actions = self.board.enum
+        actions = self._init_action_set()
         super().__init__(width, height, actions=actions)
 
         self.bg_color = bg_color
         self.font = pygame.font.Font(font, 24)
         self.last_label = '1A'
         self.cur_player = -1
+
+    def _init_action_set(self):
+        actions = {}
+        for i, row in enumerate(self.board.rows):
+            for j , col in enumerate(self.board.cols):
+                x = 0.1 * self.side_length + 0.8 * (j+0.5) / len(self.board.cols) * self.side_length
+                y = 0.1 * self.side_length + 0.8 * (i+0.5) / len(self.board.rows) * self.side_length
+                actions[row+col] = utils.element_wise_addition(self.top_left, (x, y))
+        return actions
 
     def _handle_player_events(self):
         for event in pygame.event.get():
@@ -51,13 +60,16 @@ class Reversi(PyGameWrapper):
                 except utils.ValueOutOfRange:
                     pass
 
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif (event.type == pygame.MOUSEBUTTONDOWN or
+                  event.type == pygame.USEREVENT):
                 try:
                     label = self.pos2label(event.pos)
                     if self._is_available(label, flip=True):
                         self.board.update(label, self.cur_player)
-                        if len(self._get_available_actions()) > 0:
+                        self.cur_player *= -1
+                        if len(self._get_available_actions()) <= 0:
                             self.cur_player *= -1
+                            raise utils.NoAvailableAction()
 
                 except utils.ValueOutOfRange:
                     raise utils.ValueOutOfRange()
@@ -204,3 +216,18 @@ if __name__ == '__main__':
             pygame.display.update()
         except utils.ValueOutOfRange:
             pass
+
+    
+    font = pygame.font.Font('font/OpenSans-Regular.ttf', 72)
+    text = font.render('GAME OVER', True, (255, 255, 255))
+    text_rect = text.get_rect()
+    text_rect.center = utils.element_wise_addition(game.top_left, (0.5 * game.side_length, 0.5 * game.side_length))
+    game.screen.blit(text, text_rect)
+    pygame.display.update()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
