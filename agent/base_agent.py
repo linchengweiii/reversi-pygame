@@ -62,6 +62,7 @@ class RandomAgent(BaseAgent):
         """
         return (self.col_offset + random.randint(0, self.cols_n-1) * self.block_len, self.row_offset + random.randint(0, self.rows_n-1) * self.block_len), pygame.USEREVENT
 
+
 if __name__ == "__main__":
     agent = RandomAgent()
     print(agent.step(None, None))
