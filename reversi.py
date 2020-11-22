@@ -209,15 +209,18 @@ if __name__ == '__main__':
     game.rng = np.random.RandomState(24)
     game.init()
 
-    while game.game_over() != True:
+    while game.game_over() == False:
         dt = game.clock.tick_busy_loop(30)
         try:
             game.step(dt)
             pygame.display.update()
         except utils.ValueOutOfRange:
             pass
+        except utils.NoAvailableAction:
+            pass
 
     
+    print (game.get_scores())
     font = pygame.font.Font('font/OpenSans-Regular.ttf', 72)
     text = font.render('GAME OVER', True, (255, 255, 255))
     text_rect = text.get_rect()
