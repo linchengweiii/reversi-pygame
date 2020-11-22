@@ -7,7 +7,7 @@ class BaseAgent():
     def __init__(self, rows_n = 8, cols_n = 8, width = 600, height = 600):
         self.rows_n = rows_n
         self.cols_n = cols_n
-        self.block_len = 0.8 * min(height, width)/len(cols)
+        self.block_len = 0.8 * min(height, width)/cols_n
         self.col_offset = (width - height)/2 + 0.1 * min(height, width) + 0.5 * self.block_len
         self.row_offset = 0.1 * min(height, width) + 0.5 * self.block_len
         
@@ -18,9 +18,15 @@ class BaseAgent():
 
         Parameters
         ----------
-        reward : 
-            score
-        obs    :  dict{} 
+        reward : dict
+            current_score - previous_score
+            
+            key: -1(black), 1(white)
+            value: numbers
+            
+        obs    :  dict 
+            board status
+
             key: int 0 ~ 63
             value: [-1, 0 ,1]
                     -1 : black
@@ -37,7 +43,7 @@ class BaseAgent():
             event.type: [MOUSEBUTTONUP, MOUSEBUTTONDOWN, MOUSEMOTION] (non human agent only uses MOUSEBUTTONDOWN)
         """
 
-        raise NotImplementError()
+        raise NotImplementError("You didn't finish your step function")
     
 class HumanAgent(BaseAgent):
     def step(self, reward, obs):
@@ -50,7 +56,7 @@ class RandomAgent(BaseAgent):
     def step(self, reward, obs):
         """
         """
-        return (self.col_offset + random.randint(0, self.cols_n-1) * self.block_len, self.row_offset + random.randint(0, self.rows_n-1) * self.block_len), event.type
+        return (self.col_offset + random.randint(0, self.cols_n-1) * self.block_len, self.row_offset + random.randint(0, self.rows_n-1) * self.block_len), pygame.MOUSEBUTTONDOWN
 
 if __name__ == "__main__":
     agent = RandomAgent()

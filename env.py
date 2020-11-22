@@ -95,9 +95,6 @@ class Environment(object):
             else:
                 self.state_dim = self.state_preprocessor(self.state_dim).shape
 
-        if game.allowed_fps is not None and self.fps != game.allowed_fps:
-            raise ValueError("Game requires %dfps, was given %d." %
-                             (game.allowed_fps, game.allowed_fps))
 
     def _tick(self):
         """
@@ -188,7 +185,7 @@ class Environment(object):
 
         """
 
-        return self.game.get_score()
+        return self.game.get_scores()
 
     def lives(self):
         """
@@ -210,7 +207,7 @@ class Environment(object):
         """
         self.last_action = []
         self.action = []
-        self.previous_score = 0.0
+        self.previous_scores = 0.0
         self.game.reset()
 
     def get_screen_grayscale(self):
@@ -298,12 +295,6 @@ class Environment(object):
         """
         return sum(self._one_step_act(action, event_type) for i in range(self.frame_skip))
 
-    def _draw_frame(self):
-        """
-        Decides if the screen will be drawn too
-        """
-
-        self.game._draw_frame(self.display_screen)
 
     def _one_step_act(self, action, event_type):
         """
@@ -319,7 +310,6 @@ class Environment(object):
         for i in range(self.num_steps):
             time_elapsed = self._tick()
             self.game.step(time_elapsed)
-            self._draw_frame()
 
         self.frame_count += self.num_steps
 
@@ -339,7 +329,7 @@ class Environment(object):
         """
         Returns the reward the agent has gained as the difference between the last action and the current one.
         """
-        reward = self.game.get_score() - self.previous_score
-        self.previous_score = self.game.get_score()
+        reward = self.game.get_scores() - self.previous_scores
+        self.previous_scores = self.game.get_scores()
 
         return reward
