@@ -13,19 +13,23 @@ class Reversi(PyGameWrapper):
             1: light side
     """
     BG_COLOR = (255, 255, 255)
-    def __init__(self, width=600, height=600, bg_color=BG_COLOR):
+    FONT = 'font/OpenSans-Regular.ttf'
+    def __init__(self, width=600, height=600, bg_color=BG_COLOR, font=FONT):
         screen_dim = (width, height)
         self.side_length = min(width, height)
         if width >= height:
             self.top_left = (0.5 * (width - height), 0)
         else:
             self.top_left = (0, 0.5 * (height - width))
+
+        pygame.font.init()
         self.board = ReversiBoard(self.side_length, self.top_left)
 
         actions = self.board.enum
         super().__init__(width, height, actions=actions)
 
         self.bg_color = bg_color
+        self.font = pygame.font.Font(font, 24)
         self.last_label = '1A'
         self.cur_player = -1
 
@@ -128,7 +132,7 @@ class Reversi(PyGameWrapper):
             x.append(x[-1] + dx)
             y.append(y[-1] + dy)
 
-        return is_avaul
+        return is_avail
 
     def _get_available_actions(self):
         avail = []
@@ -166,6 +170,24 @@ class Reversi(PyGameWrapper):
         self._update_scores()
         self.board.draw_board(self.screen)
         self.board.draw_pieces(self.screen)
+        self._display_scores()
+        self._display_current_palyer()
+
+    def _display_scores(self):
+        text_colors = [(0, 0, 0), (255, 255, 255)]
+        for i, (player, text_color) in enumerate(zip(self.scores, text_colors)):
+            text = self.font.render(str(self.scores[player]), True, text_color)
+            text_rect = text.get_rect()
+            text_rect.center = utils.element_wise_addition(self.top_left, (abs(0.2-i) * self.side_length, 0.95 * self.side_length))
+            self.screen.blit(text, text_rect)
+
+    def _display_current_palyer(self):
+        content = {-1: 'Black\'s turn.', 1: 'White\'s turn.'}
+        text_color = {-1: (0, 0, 0), 1: (255, 255, 255)}
+        text = self.font.render(content[self.cur_player], True, text_color[self.cur_player])
+        text_rect = text.get_rect()
+        text_rect.center = utils.element_wise_addition(self.top_left, (0.5 * self.side_length, 0.95 * self.side_length))
+        self.screen.blit(text, text_rect)
 
 if __name__ == '__main__':
     pygame.init()
