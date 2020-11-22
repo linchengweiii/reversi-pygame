@@ -37,20 +37,28 @@ class Reversi(PyGameWrapper):
 
             elif event.type == pygame.MOUSEMOTION:
                 try:
-                    self.board.update(self.last_label, 0)
+                    if self.get_game_state()[self.board.enum[self.last_label]] == 2:
+                        self.board.update(self.last_label, 0)
                     label = self.pos2label(event.pos)
                     if self._is_available(label):
                         self.last_label = label
                         self.board.update(label, 2)
+
                 except utils.ValueOutOfRange:
                     pass
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                # TODO
-                # edit status
-                pos = event.pos
-                print (pos)
-                # self.board.update()
+                try:
+                    label = self.pos2label(event.pos)
+                    if self._is_available(label):
+                        # TODO
+
+                        self.board.update(label, self.cur_player)
+                        if len(self.get_available_actions()) > 0:
+                            self.cur_player *= -1
+
+                except utils.ValueOutOfRange:
+                    pass
 
     def pos2label(self, pos):
         pos = tuple([p - tl for p, tl in zip(pos, self.top_left)])
@@ -62,14 +70,21 @@ class Reversi(PyGameWrapper):
         return self.board.pos2label(pos)
 
     def get_available_actions(self):
-        # TODO
-        return self.actions
+        avail = []
+        for row in self.board.rows:
+            for col in self.board.cols:
+                if self._is_available(row+col):
+                    avail.append(row+col)
+                
+        return avail
 
     def _is_available(self, label):
         status = self.get_game_state()
         block = self.board.enum[label]
         row = int(block // len(self.board.rows))
         col = int(block % len(self.board.rows))
+        if status[block] == 2:
+            return True
         if status[block] == 0:
             for i in range(-1, 2):
                 if row+i < 0 or row+i >= len(self.board.rows): continue
@@ -106,7 +121,8 @@ class Reversi(PyGameWrapper):
         self.board.draw_pieces(self.screen)
 
     def game_over(self):
-        # TODO
+        if len(self.get_available_actions()) > 0:
+            return True
         return False
 
     def step(self, dt):
