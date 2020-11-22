@@ -69,6 +69,9 @@ class Reversi(PyGameWrapper):
                         self.cur_player *= -1
                         if len(self._get_available_actions()) <= 0:
                             self.cur_player *= -1
+                            raise utils.NoAvailableAction()
+                    else:
+                        raise utils.InvalidAction()
 
                 except utils.ValueOutOfRange:
                     raise utils.ValueOutOfRange()
@@ -177,12 +180,28 @@ class Reversi(PyGameWrapper):
         return True
 
     def step(self, dt):
-        self._handle_player_events()
-        self._update_scores()
-        self.board.draw_board(self.screen)
-        self.board.draw_pieces(self.screen)
-        self._display_scores()
-        self._display_current_palyer()
+        try:
+            self._handle_player_events()
+            self._update_scores()
+            self.board.draw_board(self.screen)
+            self.board.draw_pieces(self.screen)
+            self._display_scores()
+            self._display_current_palyer()
+
+        except utils.ValueOutOfRange:
+            raise utils.ValueOutOfRange()
+
+        except utils.InvalidAction:
+            raise utils.InvalidAction()
+
+        except utils.NoAvailableAction:
+            self._update_scores()
+            self.board.draw_board(self.screen)
+            self.board.draw_pieces(self.screen)
+            self._display_scores()
+            self._display_current_palyer()
+            raise utils.NoAvailableAction()
+
 
     def _display_scores(self):
         text_colors = [(0, 0, 0), (255, 255, 255)]
@@ -208,12 +227,16 @@ if __name__ == '__main__':
     game.rng = np.random.RandomState(24)
     game.init()
 
-    while game.game_over() != True:
+    while game.game_over() == False:
         dt = game.clock.tick_busy_loop(30)
         try:
             game.step(dt)
             pygame.display.update()
         except utils.ValueOutOfRange:
+            pass
+        except utils.InvalidAction:
+            pass
+        except utils.NoAvailableAction:
             pass
 
     
@@ -224,7 +247,7 @@ if __name__ == '__main__':
     game.screen.blit(text, text_rect)
     pygame.display.update()
 
-    while True:
+    for _ in range(10000):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()

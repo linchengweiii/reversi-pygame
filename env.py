@@ -5,6 +5,7 @@ import sys
 import pygame
 from pygamewrapper import PyGameWrapper
 from pygame.constants import MOUSEBUTTONUP, MOUSEBUTTONDOWN, MOUSEMOTION
+import copy
 
 class Environment(object):
     """
@@ -77,7 +78,7 @@ class Environment(object):
 
         self.last_action = []
         self.action = []
-        self.previous_score = 0
+        self.previous_scores = {}
         self.frame_count = 0
 
         
@@ -103,7 +104,7 @@ class Environment(object):
         if self.force_fps:
             return 1000.0 / self.fps
         else:
-            return self.game.tick(self.fps)
+            return self.game.clock.tick_busy_loop(self.fps)
 
     def init(self):
         """
@@ -207,7 +208,7 @@ class Environment(object):
         """
         self.last_action = []
         self.action = []
-        self.previous_scores = 0.0
+        self.previous_scores = {}
         self.game.reset()
 
     def get_screen_grayscale(self):
@@ -275,6 +276,7 @@ class Environment(object):
             raise ValueError(
                 "Was asked to return state vector for game that does not support it!")
 
+
     def act(self, action, event_type):
         """
         Perform an action on the game. We lockstep frames with actions. If act is not called the game will not run.
@@ -289,27 +291,35 @@ class Environment(object):
         Returns
         -------
 
-        int
+        list
             Returns the reward that the agent has accumlated while performing the action.
 
         """
-        return sum(self._one_step_act(action, event_type) for i in range(self.frame_skip))
+        return self._one_step_act(action, event_type) # for i in range(self.frame_skip)
 
+    def _draw_frame(self):
+        """
+        Decides if the screen will be drawn too
+        """
+
+        self.game._draw_frame(self.display_screen)
 
     def _one_step_act(self, action, event_type):
         """
         Performs an action on the game. Checks if the game is over or if the provided action is valid based on the allowed action set.
         """
+        #print(action)
         if self.game_over():
             return 0.0
-
-        if action not in self.get_action_set():
-            action = self.NOOP
+        # print(self.get_action_set())
+        # if action not in self.get_action_set():
+        #     action = self.NOOP
 
         self._set_action(action, event_type)
         for i in range(self.num_steps):
             time_elapsed = self._tick()
             self.game.step(time_elapsed)
+            self.game.draw_frame(self.display_screen)
 
         self.frame_count += self.num_steps
 
@@ -319,17 +329,16 @@ class Environment(object):
         """
             Instructs the game to perform an action if its not a NOOP
         """
-
         if action is not None:
             self.game.set_action(action, self.last_action, event_type)
-
         self.last_action = action
+
 
     def _get_reward(self):
         """
         Returns the reward the agent has gained as the difference between the last action and the current one.
         """
-        reward = self.game.get_scores() - self.previous_scores
-        self.previous_scores = self.game.get_scores()
-
+        sc = copy.deepcopy(self.game.get_scores())
+        reward = {key: sc[key] - self.previous_scores.get(key, 2) for key in sc}
+        self.previous_scores = sc
         return reward
