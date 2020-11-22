@@ -39,8 +39,8 @@ class PyGameWrapper(object):
         if event_type == MOUSEBUTTONDOWN:
             md = pygame.event.Event(MOUSEBUTTONDOWN, {'pos': pos})
             mu = pygame.event.Event(MOUSEBUTTONUP, {'pos': last_pos})
-            pygame.event.pos(md)
-            pygame.event.pos(mu)
+            pygame.event.post(md)
+            pygame.event.post(mu)
 
     def get_game_state(self):
         """
