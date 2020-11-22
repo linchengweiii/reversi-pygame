@@ -69,6 +69,7 @@ class Reversi(PyGameWrapper):
                         self.cur_player *= -1
                         if len(self._get_available_actions()) <= 0:
                             self.cur_player *= -1
+                            raise utils.NoAvailableAction()
 
                 except utils.ValueOutOfRange:
                     raise utils.ValueOutOfRange()
