@@ -50,13 +50,13 @@ class Reversi(PyGameWrapper):
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 try:
                     label = self.pos2label(event.pos)
-                    if self._is_available(label):
-                        self._flip(label)
-                        if len(self.get_available_actions()) > 0:
+                    if self._is_available(label, flip=True):
+                        self.board.update(label, self.cur_player)
+                        if len(self._get_available_actions()) > 0:
                             self.cur_player *= -1
 
                 except utils.ValueOutOfRange:
-                    pass
+                    raise utils.ValueOutOfRange()
 
     def pos2label(self, pos):
         pos = tuple([p - tl for p, tl in zip(pos, self.top_left)])
@@ -67,9 +67,19 @@ class Reversi(PyGameWrapper):
 
         return self.board.pos2label(pos)
 
-    def _flip(self, label):
+    def _is_available(self, label, flip=False):
         status = self.get_game_state()
-        self.board.update(label, self.cur_player)
+        if status[self.board.enum[label]] == 2 and flip == False:
+            return True
+
+        if status[self.board.enum[label]] == 0 or status[self.board.enum[label]] == 2:
+            return self._check_around(label, flip=flip)
+
+        return False
+
+    def _check_around(self, label, flip):
+        is_avail = False
+        status = self.get_game_state()
         row = int(self.board.enum[label] // len(self.board.rows))
         col = int(self.board.enum[label] % len(self.board.rows))
         for i in range(-1, 2):
@@ -83,17 +93,23 @@ class Reversi(PyGameWrapper):
                     x, y = [i], [j]
                     while 0 <= row+x[-1] < len(self.board.rows) and 0 <= col+y[-1] < len(self.board.cols):
                         label = self.board.rows[row+x[-1]] + self.board.cols[col+y[-1]]
-                        if status[self.board.enum[label]] == self.cur_player:
-                            for r, c in zip(x, y):
-                                self.board.update(self.board.rows[row+r]+self.board.cols[col+c], self.cur_player)
+                        if status[self.board.enum[label]] == 0:
                             break
+                        if status[self.board.enum[label]] == self.cur_player:
+                            if flip:
+                                for r, c in zip(x, y):
+                                    self.board.update(self.board.rows[row+r]+self.board.cols[col+c], self.cur_player)
+                                is_avail = True
+                                break
+                            else:
+                                return True
 
                         x.append(x[-1] + i)
                         y.append(y[-1] + j)
 
+        return is_avail
 
-
-    def get_available_actions(self):
+    def _get_available_actions(self):
         avail = []
         for row in self.board.rows:
             for col in self.board.cols:
@@ -101,33 +117,6 @@ class Reversi(PyGameWrapper):
                     avail.append(row+col)
                 
         return avail
-
-    def _is_available(self, label):
-        status = self.get_game_state()
-        block = self.board.enum[label]
-        row = int(block // len(self.board.rows))
-        col = int(block % len(self.board.rows))
-        if status[block] == 2:
-            return True
-        if status[block] == 0:
-            for i in range(-1, 2):
-                if row+i < 0 or row+i >= len(self.board.rows): continue
-
-                for j in range(-1, 2):
-                    if col+j < 0 or col+j >= len(self.board.cols): continue
-
-                    label = self.board.rows[row+i] + self.board.cols[col+j]
-                    if status[self.board.enum[label]] == -1 * self.cur_player:
-                        x, y = i, j
-                        while (row+x >= 0 and row+x < len(self.board.rows) and
-                               col+y >= 0 and col+y < len(self.board.cols)):
-                            label = self.board.rows[row+x] + self.board.cols[col+y]
-                            if status[self.board.enum[label]] == self.cur_player:
-                                return True
-
-                            x, y = utils.element_wise_addition((x, y), (i, j))
-
-        return False
 
     def get_game_state(self):
         return self.board.status
@@ -145,9 +134,9 @@ class Reversi(PyGameWrapper):
         self.board.draw_pieces(self.screen)
 
     def game_over(self):
-        if len(self.get_available_actions()) > 0:
-            return True
-        return False
+        if len(self._get_available_actions()) > 0:
+            return False
+        return True
 
     def step(self, dt):
         self._handle_player_events()
@@ -162,7 +151,10 @@ if __name__ == '__main__':
     game.rng = np.random.RandomState(24)
     game.init()
 
-    while True:
+    while game.game_over() != True:
         dt = game.clock.tick_busy_loop(30)
-        game.step(dt)
-        pygame.display.update()
+        try:
+            game.step(dt)
+            pygame.display.update()
+        except utils.ValueOutOfRange:
+            pass
