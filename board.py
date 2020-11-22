@@ -23,7 +23,6 @@ class Board(object):
         self.line_color = line_color
         self.text_color = text_color
 
-        pygame.font.init()
         min_side = min(len(self.rows), len(self.cols))
         self.block_size = 0.8 * self.side_length / min_side
         self.font = pygame.font.Font(font, int(0.4 * self.block_size))
