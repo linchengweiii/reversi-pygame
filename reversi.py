@@ -240,7 +240,6 @@ if __name__ == '__main__':
             pass
 
     
-    print (game.get_scores())
     font = pygame.font.Font('font/OpenSans-Regular.ttf', 72)
     text = font.render('GAME OVER', True, (255, 255, 255))
     text_rect = text.get_rect()
