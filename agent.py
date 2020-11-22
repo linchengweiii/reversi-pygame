@@ -1,5 +1,7 @@
 import numpy as np
 import random
+import pygame
+from pygame.constants import MOUSEBUTTONUP, MOUSEBUTTONDOWN, MOUSEMOTION
 
 class Point():
     def __init__(self, r, c):
@@ -10,38 +12,53 @@ class InvalidPositionError(Exception):
     pass
 
 class BaseAgent():
-    def __init__(self):
-        self.rows = ['1', '2', '3', '4', '5', '6', '7', '8']
-        self.cols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-        self.inv_rows_dict = {i:ct for ct, i in enumerate(self.rows)}
-        self.inv_cols_dict = {i:ct for ct, i in enumerate(self.cols)}
-
-    def pos2idx(self, position: Point):
-        """
-        input: position
-        return the index to represent the position
-        """
-        if position.r not in self.rows or position.c not in self.cols:
-            raise InvalidPositionError("input point is not valid, r should be in self.rows and c should be in self.cols")
-
-        return self.inv_rows_dict[position.r] * len(self.cols) + self.inv_cols_dict[position.c]  
-
+    def __init__(self, rows_n, cols_n, width , height):
+        self.rows_n = rows_n
+        self.cols_n = cols_n
+        self.block_len = 0.8 * min(height, width)/len(cols)
+        self.col_offset = (width - height)/2 + 0.1 * min(height, width) + 0.5 * self.block_len
+        self.row_offset = 0.1 * min(height, width) + 0.5 * self.block_len
+        
 
     def step(self, reward, obs):
         """
-        reward:  score 
-        obs   :  
+        step()
+
+        Parameters
+        ----------
+        reward : 
+            score
+        obs    :  dict{}
+            64 blocks, value: [-1, 0 ,1, 2]
+                    -1 : black
+                     0 : empty
+                     1 : white
+                     2 : mouse pos
+
+        Returns
+        -------
+        list: [tuple, event.type]
+            (x, y) represents position, where (0, 0) mean top left. 
+                x: go right
+                y: go down
+            event.type: [MOUSEBUTTONUP, MOUSEBUTTONDOWN, MOUSEMOTION]
+                non human agent uses MOUSEBUTTONDOWN
         """
-        raise NonImplementError
+
+        raise NotImplementError()
     
+class HumanAgent(BaseAgent):
+    def step(self, reward, obs):
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEMOTION or event.type == pygame.MOUSEBUTTONDOWN:
+                return [event.pos, event.type]
+
 
 class RandomAgent(BaseAgent):
     def step(self, reward, obs):
         """
-        return action
         """
-        return self.pos2idx(Point(random.choice(self.rows), random.choice(self.cols)))
-
+        return (self.col_offset + random.randint(0, self.cols_n-1) * self.block_len, self.row_offset + random.randint(0, self.rows_n-1) * self.block_len)
 
 if __name__ == "__main__":
     agent = RandomAgent()
