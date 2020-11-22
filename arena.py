@@ -48,8 +48,11 @@ for i in range(1):
                 try:
                     reward1 = run_agent(agent1, reward1, obs)
                     break
-                except utils.ValueOutOfRange, InvalidAction:
+                except (utils.ValueOutOfRange, utils.InvalidAction) as e:
                     print("invalid action! retry!")
+                except utils.NoAvailableAction:
+                    print("ignore black action")
+                    break
         else:
             print("white turn")
             obs = play_ground.get_game_state()
@@ -57,8 +60,11 @@ for i in range(1):
                 try:
                     reward2 = run_agent(agent2, reward2, obs)
                     break
-                except utils.ValueOutOfRange, utils.InvalidAction:
-                    print("invalid action! retry!")    
+                except (utils.ValueOutOfRange, utils.InvalidAction) as e:
+                    print("invalid action! retry!")  
+                except utils.NoAvailableAction:
+                    print("ignore white action")
+                    break  
         run_iter += 1 
     score = game.getScore()
 
