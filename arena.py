@@ -15,10 +15,11 @@ rev_board = ReversiBoard()
 
 
 # our Random Agent!
-random_agent1 = RandomAgent()
-#random_agent1 = RandomAgent(color = "black", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = width, height = height)
-random_agent2 = RandomAgent(color = "white", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = width, height = height)
+# You can also use HumanAgent
 
+random_agent1 = RandomAgent(color = "black", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = width, height = height)
+random_agent2 = RandomAgent(color = "white", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = width, height = height)
+#random_agent2 = HumanAgent()
 reward1 = 0
 reward2 = 0
 
@@ -40,6 +41,7 @@ for i in range(1):
         play_ground.reset_game()
     while play_ground.game_over() == False:
         if (i % 2 == 0):
+            print("black turn")
             obs = play_ground.get_game_state()
             while(1):
                 try:
@@ -48,6 +50,7 @@ for i in range(1):
                 except utils.ValueOutOfRange:
                     print("invalid action! retry!")
         else:
+            print("white turn")
             obs = play_ground.get_game_state()
             while(1):
                 try:
