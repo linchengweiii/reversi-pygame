@@ -15,8 +15,8 @@ rev_board = ReversiBoard()
 
 
 # our Random Agent!
-random_agent1 = RandomAgent(rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = width, height = height)
-random_agent2 = RandomAgent(rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = width, height = height)
+random_agent1 = RandomAgent(color = "black", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = width, height = height)
+random_agent2 = RandomAgent(color = "white", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = width, height = height)
 
 reward1 = 0
 reward2 = 0

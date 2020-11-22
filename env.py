@@ -207,7 +207,7 @@ class Environment(object):
         """
         self.last_action = []
         self.action = []
-        self.previous_scores = 0.0
+        self.previous_scores = {}
         self.game.reset()
 
     def get_screen_grayscale(self):
@@ -329,7 +329,7 @@ class Environment(object):
         """
         Returns the reward the agent has gained as the difference between the last action and the current one.
         """
-        reward = self.game.get_scores() - self.previous_scores
+        reward = {key: self.game.get_scores()[key] - self.previous_scores.get(key, 0) for key in self.game.get_scores()}
         self.previous_scores = self.game.get_scores()
 
         return reward

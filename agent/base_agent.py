@@ -4,7 +4,8 @@ import pygame
 from pygame.constants import MOUSEBUTTONUP, MOUSEBUTTONDOWN, MOUSEMOTION
 
 class BaseAgent():
-    def __init__(self, rows_n = 8, cols_n = 8, width = 600, height = 600):
+    def __init__(self, color = "black", rows_n = 8, cols_n = 8, width = 600, height = 600):
+        self.color = color
         self.rows_n = rows_n
         self.cols_n = cols_n
         self.block_len = 0.8 * min(height, width)/cols_n
