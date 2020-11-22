@@ -115,7 +115,7 @@ class Environment(object):
 
         This method should be explicitly called.
         """
-        self.game._setup()
+        self.game.setup()
         self.game.init() #this is the games setup/init
 
     def get_action_set(self):
