@@ -70,6 +70,8 @@ class Reversi(PyGameWrapper):
                         if len(self._get_available_actions()) <= 0:
                             self.cur_player *= -1
                             raise utils.NoAvailableAction()
+                    else:
+                        raise utils.InvalidAction()
 
                 except utils.ValueOutOfRange:
                     raise utils.ValueOutOfRange()
@@ -216,6 +218,8 @@ if __name__ == '__main__':
             pygame.display.update()
         except utils.ValueOutOfRange:
             pass
+        except utils.InvalidAction:
+            pass
         except utils.NoAvailableAction:
             pass
 
@@ -228,7 +232,7 @@ if __name__ == '__main__':
     game.screen.blit(text, text_rect)
     pygame.display.update()
 
-    while True:
+    for _ in range(10000):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
