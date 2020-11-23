@@ -1,8 +1,8 @@
 # Reversi Game Project
 ### Prerequsite
 ```
-pip install pygame
-pip install tqdm
+$ pip install pygame
+$ pip install tqdm
 ```
 ### Repo structure
 ```
@@ -24,9 +24,11 @@ pip install tqdm
 
 
 ### Usage
-    $ git clone https://github.com/cwlin1998/reversi-pygame.git
-    $ cd reversi-pygame
-    $ python3 arena.py --time_limit=600000
+```
+$ git clone https://github.com/cwlin1998/reversi-pygame.git
+$ cd reversi-pygame
+$ python3 arena.py --time_limit=600000
+```
 
 Now you can play with an AI
 ### Github tutorial 
@@ -76,7 +78,7 @@ For example:
     - **Your agent should not exceed the time limit (30s) per game, otherwise you lose the game.**
 - Test your agent
     ```
-    python3 arena.py --agent1 cwlin1998.MyAgent --agent2 base_agent.RandomAgent
+    $ python3 arena.py --agent1 cwlin1998.MyAgent --agent2 base_agent.RandomAgent
     ```
 - Write your report
     
