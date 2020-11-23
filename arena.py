@@ -1,4 +1,3 @@
-import importlib
 from agent.base_agent import RandomAgent, HumanAgent, BaseAgent
 from reversi import Reversi
 from env import Environment
@@ -12,14 +11,13 @@ import argparse
 
 # our Random Agent!
 # You can also test with HumanAgent
-#agent1 = RandomAgent(color = "black", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = width, height = height)
-#agent2 = RandomAgent(color = "white", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = width, height = height)
+# agent1 = RandomAgent(color = "black", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = width, height = height)
+# agent2 = RandomAgent(color = "white", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = width, height = height)
 
 def run_agent(agent: BaseAgent, reward: dict, obs: dict):
     action, event_type = agent.step(reward, obs)
     reward = play_ground.act(action, event_type) # reward after an action
     return reward
-
 
 def main(play_ground, agent1, agent2, rounds):
     reward1 = 0
@@ -27,44 +25,40 @@ def main(play_ground, agent1, agent2, rounds):
 
     # start our loop
     for i in range(rounds):
-        # if the game is over
         if play_ground.game_over():
             play_ground.reset_game()
+
         run_iter = 0
         while play_ground.game_over() == False:
             if (run_iter % 2 == 0):
-                print("black turn")
                 obs = play_ground.get_game_state()
-                while(1):
+                while True:
                     try:
                         reward1 = run_agent(agent1, reward1, obs)
-                        #print(reward1)
                         if reward1[-1] != 0:
                             break
                     except (utils.ValueOutOfRange, utils.InvalidAction) as e:
                         # print("invalid action! retry!")
                         pass
                     except utils.NoAvailableAction:
-                        print("ignore black action")
-                        
+                        # print("ignore black action")
+                        run_iter += 1
                         break
             else:
-                print("white turn")
                 obs = play_ground.get_game_state()
-                while(1):
+                while True:
                     try:
-                        time.sleep(0.1)
+                        # time.sleep(0.1)
                         reward2 = run_agent(agent2, reward2, obs)
-                        #print(reward2)
                         if reward2[1] != 0:
                             break
                     except (utils.ValueOutOfRange, utils.InvalidAction) as e:
                         # print("invalid action! retry!") 
                         pass
                     except utils.NoAvailableAction:
-                        print("ignore white action")
-                        
-                        break  
+                        # print("ignore white action")
+                        run_iter += 1
+                        break
             run_iter += 1 
 
 if __name__ == "__main__":
@@ -91,8 +85,4 @@ if __name__ == "__main__":
     agent1 = getattr(agent1_module, args.agent1.split('.')[1])(color = "black", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = args.width, height = args.height)
     agent2 = getattr(agent2_module, args.agent2.split('.')[1])(color = "white", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = args.width, height = args.height)
     main(play_ground, agent1, agent2, args.rounds)
-
-
-    #score = game.getScore()
-
 
