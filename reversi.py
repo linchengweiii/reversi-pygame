@@ -154,8 +154,8 @@ class Reversi(PyGameWrapper):
         """
         is_avail = False
         status = self.get_game_state()
-        row = int(self.board.enum[label] // len(self.board.rows))
-        col = int(self.board.enum[label] % len(self.board.rows))
+        row = int(self.board.enum[label] // len(self.board.cols))
+        col = int(self.board.enum[label] % len(self.board.cols))
         for i in range(-1, 2):
             if row+i < 0 or row+i >= len(self.board.rows): continue
 

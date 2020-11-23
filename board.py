@@ -43,7 +43,7 @@ class Board(object):
     def _enum(self):
         for i, r in enumerate(self.rows):
             for j, c in enumerate(self.cols):
-                self.enum[r+c] = i*len(self.rows)+j
+                self.enum[r+c] = i*len(self.cols)+j
 
     def pos2label(self, pos):
         """
