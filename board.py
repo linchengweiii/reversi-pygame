@@ -46,6 +46,9 @@ class Board(object):
                 self.enum[r+c] = i*len(self.rows)+j
 
     def pos2label(self, pos):
+        """
+        Change the position on the board to label on the board.
+        """
         if (pos[0] < 0.1 * self.side_length or
             pos[0] >= 0.9 * self.side_length or
             pos[1] < 0.1 * self.side_length or

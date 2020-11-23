@@ -98,6 +98,9 @@ class Reversi(PyGameWrapper):
         self.scores[1] = y
 
     def pos2label(self, pos):
+        """
+        Change the screen position to the label on the board.
+        """
         pos = tuple([p - tl for p, tl in zip(pos, self.top_left)])
 
         if (pos[0] < 0 or pos[0] > self.side_length or
@@ -107,6 +110,21 @@ class Reversi(PyGameWrapper):
         return self.board.pos2label(pos)
 
     def _is_available(self, label, flip=False):
+        """
+        Check if is able to place a piece on the label.
+
+        Parameters
+        ----------
+        label: str
+            The reference position
+        flip: bool
+            Flip the pieces or not
+
+        Return
+        ------
+        bool
+            Whether able to place the piece or not
+        """
         status = self.get_game_state()
         if status[self.board.enum[label]] == 2 and flip == False:
             return True
@@ -117,6 +135,23 @@ class Reversi(PyGameWrapper):
         return False
 
     def _check_around(self, label, flip):
+        """
+        Check the 3x3 blocks centered by label are occupied by the opponent or not.
+        Run through that direction if the block on that direction is occupied by the opponent.
+
+        Parameters
+        ----------
+        label: str
+            The reference position
+        flip: bool
+            Flip the pieces or not
+
+        Return
+        ------
+        bool
+            Whether able to flip or not
+
+        """
         is_avail = False
         status = self.get_game_state()
         row = int(self.board.enum[label] // len(self.board.rows))
@@ -135,6 +170,24 @@ class Reversi(PyGameWrapper):
         return is_avail
 
     def _check_direction(self, row, col, dx, dy, flip):
+        """
+        Check each direction whether is able to flip pieces or not.
+
+        Parameters
+        ----------
+        row, col: int
+            The position to start from
+        dx, dy: int
+            The direction to go through
+        flip: bool
+            Flip the pieces or not
+
+        Return
+        ------
+        bool
+            Whether able to flip or not
+
+        """
         is_avail = False
         status = self.get_game_state()
         x, y = [dx], [dy]
@@ -205,6 +258,9 @@ class Reversi(PyGameWrapper):
             return True
 
     def _display_game_over(self):
+        """
+        Display 'GAME OVER' on the screen 
+        """
         font = pygame.font.Font(self.font, 72)
         text = font.render('GAME OVER', True, (255, 255, 255))
         text_rect = text.get_rect()
@@ -238,16 +294,25 @@ class Reversi(PyGameWrapper):
             raise utils.NoAvailableAction()
 
     def _time_out(self):
+        """
+        Gets the time left, return true if no time left.
+        """
         if pygame.time.get_ticks() - self.prev_action_time > self.time_left[self.cur_player]:
             return True
         return False
 
     def _update_time_left(self):
+        """
+        Update the time left to the time left on the screen on date.
+        """
         if pygame.time.get_ticks() - self.prev_action_time > self.time_left[self.cur_player] % 1000:
             self.time_left[self.cur_player] -= pygame.time.get_ticks() - self.prev_action_time
             self.prev_action_time = pygame.time.get_ticks()
 
     def _display_scores_and_time_left(self):
+        """
+        Dispaly scores and time left for both players.
+        """
         text_colors = [[(255,160,122), (255,160,122)], [(0, 0, 0), (255, 255, 255)]]
         time_left = {key: max(0, int(self.time_left[key] // 1000)) for key in self.time_left}
         for i, display_dict in enumerate((time_left, self.scores)):
@@ -259,6 +324,9 @@ class Reversi(PyGameWrapper):
                 self.screen.blit(text, text_rect)
 
     def _display_current_player(self):
+        """
+        Display who's turn to play.
+        """
         content = {-1: 'Black\'s turn.', 1: 'White\'s turn.'}
         text_color = {-1: (0, 0, 0), 1: (255, 255, 255)}
         font = pygame.font.Font(self.font, 24)
