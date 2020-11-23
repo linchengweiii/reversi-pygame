@@ -29,7 +29,7 @@ class Reversi(PyGameWrapper):
         super().__init__(width, height, actions=actions)
 
         self.bg_color = bg_color
-        self.font = pygame.font.Font(font, 24)
+        self.font = font
         self.last_label = '1A'
         self.cur_player = -1
 
@@ -179,7 +179,15 @@ class Reversi(PyGameWrapper):
     def game_over(self):
         if len(self._get_available_actions()) > 0:
             return False
-        return True
+        else:
+            font = pygame.font.Font(self.font, 72)
+            text = font.render('GAME OVER', True, (255, 255, 255))
+            text_rect = text.get_rect()
+            text_rect.center = utils.element_wise_addition(self.top_left, (0.5 * self.side_length, 0.5 * self.side_length))
+            self.screen.blit(text, text_rect)
+            pygame.display.update()
+
+            return True
 
     def step(self, dt):
         try:
@@ -208,7 +216,8 @@ class Reversi(PyGameWrapper):
     def _display_scores(self):
         text_colors = [(0, 0, 0), (255, 255, 255)]
         for i, (player, text_color) in enumerate(zip(self.scores, text_colors)):
-            text = self.font.render(str(self.scores[player]), True, text_color)
+            font = pygame.font.Font(self.font, 24)
+            text = font.render(str(self.scores[player]), True, text_color)
             text_rect = text.get_rect()
             text_rect.center = utils.element_wise_addition(self.top_left, (abs(0.2-i) * self.side_length, 0.95 * self.side_length))
             self.screen.blit(text, text_rect)
@@ -216,7 +225,8 @@ class Reversi(PyGameWrapper):
     def _display_current_palyer(self):
         content = {-1: 'Black\'s turn.', 1: 'White\'s turn.'}
         text_color = {-1: (0, 0, 0), 1: (255, 255, 255)}
-        text = self.font.render(content[self.cur_player], True, text_color[self.cur_player])
+        font = pygame.font.Font(self.font, 24)
+        text = font.render(content[self.cur_player], True, text_color[self.cur_player])
         text_rect = text.get_rect()
         text_rect.center = utils.element_wise_addition(self.top_left, (0.5 * self.side_length, 0.95 * self.side_length))
         self.screen.blit(text, text_rect)
@@ -240,15 +250,7 @@ if __name__ == '__main__':
             pass
         except utils.NoAvailableAction:
             pass
-
     
-    font = pygame.font.Font('font/OpenSans-Regular.ttf', 72)
-    text = font.render('GAME OVER', True, (255, 255, 255))
-    text_rect = text.get_rect()
-    text_rect.center = utils.element_wise_addition(game.top_left, (0.5 * game.side_length, 0.5 * game.side_length))
-    game.screen.blit(text, text_rect)
-    pygame.display.update()
-
     for _ in range(10000):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
