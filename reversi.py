@@ -164,6 +164,8 @@ class Reversi(PyGameWrapper):
         return self.actions
 
     def init(self):
+        self.board.reset_status()
+
         init_status = [('4D', 1), ('4E', -1), ('5D', -1), ('5E', 1)]
         for s in init_status:
             self.board.update(*s)

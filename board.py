@@ -31,8 +31,14 @@ class Board(object):
         self._enum()
 
         self.status = {}
+        self._init_status()
+
+    def _init_status(self):
         for i in range(self.n_blocks):
             self.status[i] = 0
+
+    def reset_status(self):
+        self._init_status()
 
     def _enum(self):
         for i, r in enumerate(self.rows):
