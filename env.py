@@ -1,7 +1,5 @@
 import numpy as np
-from PIL import Image  # pillow
 import sys
-
 import pygame
 from pygamewrapper import PyGameWrapper
 from pygame.constants import MOUSEBUTTONDOWN, MOUSEMOTION
@@ -254,20 +252,17 @@ class Environment(object):
         Decides if the screen will be drawn too
         """
 
-        self.game._draw_frame(self.display_screen)
+        self.game.draw_frame(self.display_screen)
 
     def _one_step_act(self, action, event_type):
         """
         Performs an action on the game. Checks if the game is over or if the provided action is valid based on the allowed action set.
         """
-        if self.game_over():
-            return 0.0
-
         self._set_action(action, event_type)
         for i in range(self.num_steps):
             time_elapsed = self._tick()
             self.game.step(time_elapsed)
-            self.game.draw_frame(self.display_screen)
+            self._draw_frame()
 
         self.frame_count += self.num_steps
 

@@ -1,4 +1,3 @@
-import numpy as np
 import random
 import pygame
 import sys
@@ -47,15 +46,16 @@ class BaseAgent():
     
 class HumanAgent(BaseAgent):
     def step(self, reward, obs):
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.MOUSEMOTION:
-                    return event.pos, event.type
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    return event.pos, pygame.USEREVENT
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEMOTION:
+                return event.pos, event.type
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                return event.pos, pygame.USEREVENT
+
+        return (-1, -1), None
 
 
 class RandomAgent(BaseAgent):

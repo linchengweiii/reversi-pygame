@@ -13,6 +13,8 @@ class PyGameWrapper(object):
         self.screen = None
         self.clock = None
 
+        self.winner = 0
+
     def setup(self):
         """
         Setups up the pygame env, the display and game clock.
@@ -74,6 +76,16 @@ class PyGameWrapper(object):
 
         """
         return self.actions.values()
+
+    def get_winner(self):
+        """
+        Get the winner for the game.
+
+        Returns
+        ------
+        int
+        """
+        return self.winner
 
     def init(self):
         """
