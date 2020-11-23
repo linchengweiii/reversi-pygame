@@ -56,7 +56,7 @@ def main(play_ground, agent1, agent2, rounds):
         play_ground._draw_frame()
 
 
-        if game.winner == 1:
+        if game.winner == -1:
             n_black_wins += 1
 
     print ('Your win rate is', n_black_wins / rounds)
