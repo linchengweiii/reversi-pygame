@@ -58,7 +58,7 @@ For example:
     For example:
     ```
     ├── agent
-    │   ├── wlin1998.py
+    │   ├── cwlin1998.py
     │   └── base_agent.py 
     ```
 - Test your agent
