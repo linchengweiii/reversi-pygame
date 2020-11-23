@@ -229,6 +229,8 @@ class Reversi(PyGameWrapper):
 
         self.time_left = {-1: self.time_limit, 1: self.time_limit}
 
+        self.cur_player = -1
+
         init_status = [('4D', 1), ('4E', -1), ('5D', -1), ('5E', 1)]
         for s in init_status:
             self.board.update(*s)
