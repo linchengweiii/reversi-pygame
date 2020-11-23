@@ -1,7 +1,7 @@
-import numpy as np
 import random
 import pygame
-from pygame.constants import MOUSEBUTTONUP, MOUSEBUTTONDOWN, MOUSEMOTION
+import sys
+from pygame.constants import MOUSEBUTTONDOWN, MOUSEMOTION
 
 class BaseAgent():
     def __init__(self, color = "black", rows_n = 8, cols_n = 8, width = 600, height = 600):
@@ -15,8 +15,6 @@ class BaseAgent():
 
     def step(self, reward, obs):
         """
-        step()
-
         Parameters
         ----------
         reward : dict
@@ -48,12 +46,16 @@ class BaseAgent():
     
 class HumanAgent(BaseAgent):
     def step(self, reward, obs):
-        while(1):
-            for event in pygame.event.get():
-                if event.type == pygame.MOUSEMOTION:
-                    return event.pos, event.type
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    return event.pos, pygame.USEREVENT
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEMOTION:
+                return event.pos, event.type
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                return event.pos, pygame.USEREVENT
+
+        return (-1, -1), None
 
 
 class RandomAgent(BaseAgent):

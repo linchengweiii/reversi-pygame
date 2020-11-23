@@ -2,6 +2,7 @@
 ### Prerequsite
 ```
 pip install pygame
+pip install tqdm
 ```
 ### Repo structure
 ```
@@ -23,14 +24,24 @@ pip install pygame
 
 
 ### Usage
-```
-git clone https://github.com/cwlin1998/reversi-pygame.git
-cd reversi-pygame
-python3 arena.py 
-```
+    $ git clone https://github.com/cwlin1998/reversi-pygame.git
+    $ cd reversi-pygame
+    $ python3 arena.py --time_limit=600000
+
 Now you can play with an AI
 ### Github tutorial 
 [Our slide](https://docs.google.com/presentation/d/1X0YmTyj4BNnG7E8saxtG-jH9XLWm8OiFG3L21HhgRwc/edit#slide=id.gacd295469b_2_15)
+
+### Python tutorial
+
+[Our slide](https://docs.google.com/presentation/d/1pyyqS0QBvdS6jl4sLFFINce6fYdUXPpX9f47-3n6AME/edit?usp=sharing)
+
+### Markdown tutorial
+
+[Our slide](https://docs.google.com/presentation/d/1BrGTMmXFdGQpRkhMQs3FPhjOsyPv-EwPOy3bguRlIbI/edit?usp=sharing)
+
+
+
 ###  Preparation for Team Project
 1. Fork this repo and make it private.
 2. Add your teamates and TA to your repo.
@@ -39,14 +50,14 @@ For example:
     ### Team members
     - Team leader:
         - name: Cheng-Wei Lin
-        - school_id: r09902000
+        - student_id: r09922078
         - github: [cwlin1998](https://github.com/cwlin1998)
     - member:
         - name: Chi-Ming Chung
-        - school_id: r09944021
+        - student_id: r09944021
         - github: [MarvinChung](https://github.com/MarvinChung)
 
-## Todo:
+## Todo
 - Write an agent for your game:
     - You need to inherit BaseAgent and write your own agent
     ```
@@ -58,14 +69,17 @@ For example:
     For example:
     ```
     ├── agent
-    │   ├── wlin1998.py
+    │   ├── cwlin1998.py
     │   └── base_agent.py 
     ```
+    
+    - **Your agent should not exceed the time limit (30s) per game, otherwise you lose the game.**
 - Test your agent
     ```
-    python3 arena.py --agent1 wlin1998.MyAgent --agent2 base_agent.RandomAgent
+    python3 arena.py --agent1 cwlin1998.MyAgent --agent2 base_agent.RandomAgent
     ```
 - Write your report
+    
     - Put your report in README.md. Learn how to write markdown
     
 - Work as a team and learn how to use github and read code :100: 
@@ -76,13 +90,14 @@ For example:
     - When your fork this repo and add TAs into your repo you get 8 points.
     - You get 2 points when you add your teammates and show their name in README.md.
 - (**10 %**) Create your own branch and clean our branches
-    - Delete all our branches except main.
+    - Delete all of our branches except main.
     - Create your own branches.
 - (**10 %**) protect main branch 
-    - Merge only when all teammember approves.
+    - Merge only when all teammember(not including TAs) approves.
     - Main branch should be clean. No redundacy code and bug.
     - You will need to use git branch and learn how to use git rebase.
 - (**10 %**) All members should collaborate together and use pull request.
+    
     - Disccus to each other.
 - (**10 %**) use git tag to do version control
     - For example: 
@@ -96,28 +111,30 @@ For example:
             ### Team members
             - Team leader:
                 - name: Cheng-Wei Lin
-                - school_id: r09902000
+                - student_id: r09922078
                 - github: [cwlin1998](https://github.com/cwlin1998)
             - member:
                 - name: Chi-Ming Chung
-                - school_id: r09944021
+                - student_id: r09944021
                 - github: [MarvinChung](https://github.com/MarvinChung)
             ### Report
             I don't have time therefore I submit random agent.
 
 ### Python coding (40 %) 
-- (**10 %**) Your agent can run
-    - You can even copy paste our RandomAgent and you get 10 points. 
+- (**10 %**) Your agent can be run
+    - You can even copy paste our RandomAgent and change the name to get 10 points. 
 - (**10 %**) Pass the baseline
-    - We will test your agent agaist RandomAgent. You need to have at least 80% win rate to get 10 points.
-- (**20 %**) leaderboard
-    - We will test all your agents and you will fight each others.
-    - Your team will get 1 point if you beat another team. Try to beat  your classmates! :punch:
+    - We will test your agent agaist RandomAgent. You need to have an at least 80% win rate to get 10 points.
+    - **Caution: Please do not exceed time limit(30s per game)**
+- (**20 %**) Leaderboard
+    - We will test all your agents and you will fight with each others.
+    - Your team will get 1 point if you beat another team. (You can get 20 points at most.) Try to beat  your classmates! :punch:
     - Don't give others your code! :no_good:
     - **The leaderboard will be announced.** 
     You have one month for this HW. Good luck!
 
-### QA
+## QA
+
 1. Put your questions in issues inside this repo.
 2. **Bonus:**
     If you find bugs :beetle: in TAs' repo. you can report it with issues and fix it with pull request then you may get bonus points. :thumbsup:

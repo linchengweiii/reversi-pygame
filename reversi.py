@@ -14,7 +14,7 @@ class Reversi(PyGameWrapper):
     """
     BG_COLOR = (255, 255, 255)
     FONT = 'font/OpenSans-Regular.ttf'
-    def __init__(self, width=600, height=600, bg_color=BG_COLOR, font=FONT):
+    def __init__(self, width=600, height=600, time_limit=30000, bg_color=BG_COLOR, font=FONT):
         screen_dim = (width, height)
         self.side_length = min(width, height)
         if width >= height:
@@ -29,9 +29,12 @@ class Reversi(PyGameWrapper):
         super().__init__(width, height, actions=actions)
 
         self.bg_color = bg_color
-        self.font = pygame.font.Font(font, 24)
+        self.font = font
         self.last_label = '1A'
         self.cur_player = -1
+        self.prev_action_time = 0
+        self.time_limit = time_limit
+        self.time_left = {-1: time_limit, 1: time_limit}
 
     def _init_action_set(self):
         actions = {}
@@ -65,8 +68,13 @@ class Reversi(PyGameWrapper):
                 try:
                     label = self.pos2label(event.pos)
                     if self._is_available(label, flip=True):
+                        cur_time = pygame.time.get_ticks()
+                        self.time_left[self.cur_player] -= cur_time - self.prev_action_time
+                        self.prev_action_time = cur_time
+
                         self.board.update(label, self.cur_player)
                         self.cur_player *= -1
+
                         if len(self._get_available_actions()) <= 0:
                             self.cur_player *= -1
                             raise utils.NoAvailableAction()
@@ -164,6 +172,10 @@ class Reversi(PyGameWrapper):
         return self.actions
 
     def init(self):
+        self.board.reset_status()
+
+        self.time_left = {-1: self.time_limit, 1: self.time_limit}
+
         init_status = [('4D', 1), ('4E', -1), ('5D', -1), ('5E', 1)]
         for s in init_status:
             self.board.update(*s)
@@ -175,18 +187,41 @@ class Reversi(PyGameWrapper):
         self.board.draw_pieces(self.screen)
 
     def game_over(self):
-        if len(self._get_available_actions()) > 0:
+        if self._time_out():
+            self.winner = -1 * self.cur_player
+            self._display_game_over()
+            return True
+
+        elif len(self._get_available_actions()) > 0:
             return False
-        return True
+
+        else:
+            if self.scores[1] > self.scores[-1]:
+                self.winner = 1
+            elif self.scores[-1] > self.scores[1]:
+                self.winner = -1
+
+            self._display_game_over()
+            return True
+
+    def _display_game_over(self):
+        font = pygame.font.Font(self.font, 72)
+        text = font.render('GAME OVER', True, (255, 255, 255))
+        text_rect = text.get_rect()
+        text_rect.center = utils.element_wise_addition(self.top_left, (0.5 * self.side_length, 0.5 * self.side_length))
+        self.screen.blit(text, text_rect)
 
     def step(self, dt):
+        self._update_time_left()
+        self._display_scores_and_time_left()
+
         try:
             self._handle_player_events()
             self._update_scores()
             self.board.draw_board(self.screen)
             self.board.draw_pieces(self.screen)
-            self._display_scores()
-            self._display_current_palyer()
+            self._display_scores_and_time_left()
+            self._display_current_player()
 
         except utils.ValueOutOfRange:
             raise utils.ValueOutOfRange()
@@ -198,30 +233,44 @@ class Reversi(PyGameWrapper):
             self._update_scores()
             self.board.draw_board(self.screen)
             self.board.draw_pieces(self.screen)
-            self._display_scores()
-            self._display_current_palyer()
+            self._display_scores_and_time_left()
+            self._display_current_player()
             raise utils.NoAvailableAction()
 
+    def _time_out(self):
+        if pygame.time.get_ticks() - self.prev_action_time > self.time_left[self.cur_player]:
+            return True
+        return False
 
-    def _display_scores(self):
-        text_colors = [(0, 0, 0), (255, 255, 255)]
-        for i, (player, text_color) in enumerate(zip(self.scores, text_colors)):
-            text = self.font.render(str(self.scores[player]), True, text_color)
-            text_rect = text.get_rect()
-            text_rect.center = utils.element_wise_addition(self.top_left, (abs(0.2-i) * self.side_length, 0.95 * self.side_length))
-            self.screen.blit(text, text_rect)
+    def _update_time_left(self):
+        if pygame.time.get_ticks() - self.prev_action_time > self.time_left[self.cur_player] % 1000:
+            self.time_left[self.cur_player] -= pygame.time.get_ticks() - self.prev_action_time
+            self.prev_action_time = pygame.time.get_ticks()
 
-    def _display_current_palyer(self):
+    def _display_scores_and_time_left(self):
+        text_colors = [[(255,160,122), (255,160,122)], [(0, 0, 0), (255, 255, 255)]]
+        time_left = {key: max(0, int(self.time_left[key] // 1000)) for key in self.time_left}
+        for i, display_dict in enumerate((time_left, self.scores)):
+            for j, (player, text_color) in enumerate(zip(display_dict, text_colors[i])):
+                font = pygame.font.Font(self.font, 24)
+                text = font.render(str(display_dict[player]), True, text_color)
+                text_rect = text.get_rect()
+                text_rect.center = utils.element_wise_addition(self.top_left, (abs(0.1*(i+1)-j) * self.side_length, 0.95 * self.side_length))
+                self.screen.blit(text, text_rect)
+
+    def _display_current_player(self):
         content = {-1: 'Black\'s turn.', 1: 'White\'s turn.'}
         text_color = {-1: (0, 0, 0), 1: (255, 255, 255)}
-        text = self.font.render(content[self.cur_player], True, text_color[self.cur_player])
+        font = pygame.font.Font(self.font, 24)
+        text = font.render(content[self.cur_player], True, text_color[self.cur_player])
         text_rect = text.get_rect()
         text_rect.center = utils.element_wise_addition(self.top_left, (0.5 * self.side_length, 0.95 * self.side_length))
         self.screen.blit(text, text_rect)
 
+
 if __name__ == '__main__':
     pygame.init()
-    game = Reversi(width=800, height=600)
+    game = Reversi(width=600, height=600)
     game.screen = pygame.display.set_mode(game.get_screen_dims(), 0, 32)
     game.clock = pygame.time.Clock()
     game.rng = np.random.RandomState(24)
@@ -238,15 +287,7 @@ if __name__ == '__main__':
             pass
         except utils.NoAvailableAction:
             pass
-
     
-    font = pygame.font.Font('font/OpenSans-Regular.ttf', 72)
-    text = font.render('GAME OVER', True, (255, 255, 255))
-    text_rect = text.get_rect()
-    text_rect.center = utils.element_wise_addition(game.top_left, (0.5 * game.side_length, 0.5 * game.side_length))
-    game.screen.blit(text, text_rect)
-    pygame.display.update()
-
     for _ in range(10000):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

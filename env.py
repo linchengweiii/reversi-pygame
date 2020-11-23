@@ -1,10 +1,8 @@
 import numpy as np
-from PIL import Image  # pillow
 import sys
-
 import pygame
 from pygamewrapper import PyGameWrapper
-from pygame.constants import MOUSEBUTTONUP, MOUSEBUTTONDOWN, MOUSEMOTION
+from pygame.constants import MOUSEBUTTONDOWN, MOUSEMOTION
 import copy
 
 class Environment(object):
@@ -14,8 +12,7 @@ class Environment(object):
         frame_skip=1, num_steps=1,
         reward_values={}, force_fps=True,
         display_screen=False, add_noop_action=True,
-        NOOP=K_F15, state_preprocessor=None,
-        rng=24
+        NOOP=K_F15, state_preprocessor=None
     )
 
     Main wrapper that interacts with games.
@@ -57,15 +54,12 @@ class Environment(object):
         Python function which takes a dict representing game state and
         returns a numpy array.
 
-    rng: numpy.random.RandomState, int, array_like or None. (default: 24)
-        Number generator which is used by PLE and the games.
-
     """
 
     def __init__(self,
                  game, fps=30, frame_skip=1, num_steps=1,
                  reward_values={}, force_fps=True, display_screen=False,
-                 add_noop_action=True, state_preprocessor=None, rng=24):
+                 add_noop_action=True, state_preprocessor=None):
 
         self.game = game
         self.fps = fps
@@ -188,20 +182,6 @@ class Environment(object):
 
         return self.game.get_scores()
 
-    def lives(self):
-        """
-        Gets the number of lives the agent has left. Not all games have
-        the concept of lives.
-
-        Returns
-        -------
-
-        int
-
-        """
-
-        return self.game.lives
-
     def reset_game(self):
         """
         Performs a reset of the games to a clean initial state.
@@ -210,24 +190,6 @@ class Environment(object):
         self.action = []
         self.previous_scores = {}
         self.game.reset()
-
-    def get_screen_grayscale(self):
-        """
-        Gets the current game screen in Grayscale format. Converts from RGB using relative lumiance.
-
-        Returns
-        --------
-        numpy uint8 array
-                Returns a numpy array with the shape (width, height).
-
-
-        """
-        frame = self.get_screen_RGB()
-        frame = 0.21 * frame[:, :, 0] + 0.72 * \
-            frame[:, :, 1] + 0.07 * frame[:, :, 2]
-        frame = np.round(frame).astype(np.uint8)
-
-        return frame
 
     def get_screen_dims(self):
         """
@@ -240,18 +202,6 @@ class Environment(object):
             Returns a tuple of the following format (screen_width, screen_height).
         """
         return self.game.get_screen_dims()
-
-    def get_game_state_dims(self):
-        """
-        Gets the games non-visual state dimensions.
-
-        Returns
-        -------
-
-        tuple of int or None
-            Returns a tuple of the state vectors shape or None if the game does not support it.
-        """
-        return self.state_dim
 
     def get_game_state(self):
         """
@@ -302,24 +252,17 @@ class Environment(object):
         Decides if the screen will be drawn too
         """
 
-        self.game._draw_frame(self.display_screen)
+        self.game.draw_frame(self.display_screen)
 
     def _one_step_act(self, action, event_type):
         """
         Performs an action on the game. Checks if the game is over or if the provided action is valid based on the allowed action set.
         """
-        #print(action)
-        if self.game_over():
-            return 0.0
-        # print(self.get_action_set())
-        # if action not in self.get_action_set():
-        #     action = self.NOOP
-
         self._set_action(action, event_type)
         for i in range(self.num_steps):
             time_elapsed = self._tick()
             self.game.step(time_elapsed)
-            self.game.draw_frame(self.display_screen)
+            self._draw_frame()
 
         self.frame_count += self.num_steps
 
