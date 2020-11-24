@@ -45,7 +45,8 @@ Now you can play with an AI
 
 
 ###  Preparation for Team Project
-1. Fork this repo and make it private.
+1. [Duplicate this repo](https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/duplicating-a-repository) and make it private.
+> Thanks to [GWFrank](https://github.com/GWFrank) providing the solution.
 2. Add your teamates and TA to your repo.
 3. Write your member name in your README.
 For example:
@@ -89,7 +90,7 @@ For example:
 ## Grading policy
 ### Learn Github (60%)
 - (**10 %**) Fork our repo
-    - When your fork this repo and add TAs into your repo you get 8 points.
+    - When your duplicate this repo and add TAs into your repo you get 8 points.
     - You get 2 points when you add your teammates and show their name in README.md.
 - (**10 %**) Create your own branch and clean our branches
     - Delete all of our branches except main.
@@ -140,3 +141,4 @@ For example:
 1. Put your questions in issues inside this repo.
 2. **Bonus:**
     If you find bugs :beetle: in TAs' repo. you can report it with issues and fix it with pull request then you may get bonus points. :thumbsup:
+
