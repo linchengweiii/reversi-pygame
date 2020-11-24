@@ -154,8 +154,8 @@ class Reversi(PyGameWrapper):
         """
         is_avail = False
         status = self.get_game_state()
-        row = int(self.board.enum[label] // len(self.board.rows))
-        col = int(self.board.enum[label] % len(self.board.rows))
+        row = int(self.board.enum[label] // len(self.board.cols))
+        col = int(self.board.enum[label] % len(self.board.cols))
         for i in range(-1, 2):
             if row+i < 0 or row+i >= len(self.board.rows): continue
 
@@ -228,6 +228,8 @@ class Reversi(PyGameWrapper):
         self.board.reset_status()
 
         self.time_left = {-1: self.time_limit, 1: self.time_limit}
+
+        self.cur_player = -1
 
         init_status = [('4D', 1), ('4E', -1), ('5D', -1), ('5E', 1)]
         for s in init_status:

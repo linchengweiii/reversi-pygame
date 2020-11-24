@@ -29,10 +29,10 @@ class ReversiBoard(Board):
             if self.status[key] == 0:
                 continue
             else:
-                n_row = key // len(self.rows)
-                n_col = key % len(self.rows)
-                pos = (self.top_left[0] + 0.1 * self.side_length + 0.8 * (n_col + 0.5) / len(self.cols) * self.side_length,
-                       self.top_left[1] + 0.1 * self.side_length + 0.8 * (n_row + 0.5) / len(self.rows) * self.side_length)
+                row_index = key // len(self.cols)
+                col_index = key % len(self.cols)
+                pos = (self.top_left[0] + 0.1 * self.side_length + 0.8 * (col_index + 0.5) / len(self.cols) * self.side_length,
+                       self.top_left[1] + 0.1 * self.side_length + 0.8 * (row_index + 0.5) / len(self.rows) * self.side_length)
                 pygame.draw.circle(screen, self.status2color[self.status[key]], pos, 0.35 * self.block_size)
 
 if __name__ == '__main__':
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((800, 600), 0, 32)
     board = ReversiBoard(600, (100, 0))
     board.draw_board(screen)
-    board.update('1A', -1)
+    board.update('1I', -1)
     board.draw_pieces(screen)
     while True:
         for event in pygame.event.get():
