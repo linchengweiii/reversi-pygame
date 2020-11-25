@@ -66,13 +66,15 @@ For example:
     ```
     class MyAgent(BaseAgent):
         def step(self, obs, reward):
-            // override this function
+            # override this function
+            # strongly suggest: write a function to get valid actions
     ```
     - Put your agent in agent_folder and name it using your team leader's github id
     For example:
     ```
     ├── agent
     │   ├── cwlin1998.py
+    │   ├── cwlin1998/    # put your other files under this folder
     │   └── base_agent.py 
     ```
     
@@ -86,6 +88,13 @@ For example:
     - Put your report in README.md. Learn how to write markdown
     
 - Work as a team and learn how to use github and read code :100: 
+
+## Limitation
+- 4GB file
+- 4GB memory usage 
+- 4 threads
+- If you want to use third-party packages other than numpy, pygame, pytorch and tensorflow, report an issue. (We suggest using rule based algorithm)
+
 
 ## Grading policy
 ### Learn Github (60%)
@@ -141,4 +150,3 @@ For example:
 1. Put your questions in issues inside this repo.
 2. **Bonus:**
     If you find bugs :beetle: in TAs' repo. you can report it with issues and fix it with pull request then you may get bonus points. :thumbsup:
-
