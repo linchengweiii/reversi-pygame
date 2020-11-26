@@ -66,13 +66,15 @@ For example:
     ```
     class MyAgent(BaseAgent):
         def step(self, obs, reward):
-            // override this function
+            # override this function
+            # strongly suggest: write a function to get valid actions
     ```
     - Put your agent in agent_folder and name it using your team leader's github id
     For example:
     ```
     ├── agent
     │   ├── cwlin1998.py
+    │   ├── cwlin1998/    # put your other files under this folder
     │   └── base_agent.py 
     ```
     
@@ -87,22 +89,29 @@ For example:
     
 - Work as a team and learn how to use github and read code :100: 
 
+## Limitation
+- 4GB file
+- 4GB memory usage 
+- 4 threads
+- If you want to use third-party packages other than numpy, pygame, pytorch and tensorflow, report an issue. (We suggest using rule based algorithm)
+
+
 ## Grading policy
 ### Learn Github (60%)
-- (**10 %**) Fork our repo
+- (**10 %**) Duplicate our repo
     - When your duplicate this repo and add TAs into your repo you get 8 points.
     - You get 2 points when you add your teammates and show their name in README.md.
 - (**10 %**) Create your own branch and clean our branches
     - Delete all of our branches except main.
     - Create your own branches.
-- (**10 %**) protect main branch 
+- (**10 %**) Protect main branch 
     - Merge only when all teammember(not including TAs) approves.
     - Main branch should be clean. No redundacy code and bug.
     - You will need to use git branch and learn how to use git rebase.
 - (**10 %**) All members should collaborate together and use pull request.
     
     - Disccus to each other.
-- (**10 %**) use git tag to do version control
+- (**10 %**) Use git tag to do version control
     - For example: 
         - tag name: v1.0, v1.1 ....
     - TA will grade your code using the latest tag
@@ -141,4 +150,3 @@ For example:
 1. Put your questions in issues inside this repo.
 2. **Bonus:**
     If you find bugs :beetle: in TAs' repo. you can report it with issues and fix it with pull request then you may get bonus points. :thumbsup:
-
