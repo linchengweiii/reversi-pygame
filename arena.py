@@ -11,31 +11,25 @@ from tqdm.auto import tqdm
 class Arena(object):
     def __init__(self, playground, player1, player2):
         self.playground = playground
-        self.player1 = player1
-        self.player2 = player2
+        self.player = {-1: player1, 1: player2}
 
     def run(self, n_rounds):
         n_rounds_black_wins = 0
         for i in tqdm(range(n_rounds)):
-            reward1, reward2 = {}, {}
+            reward = {-1: {}, 1: {}}
             if self.playground.game_over():
                 self.playground.reset_game()
 
-            it = 0
-            while playground.game_over() == False:
-                if it % 2 == 0:
-                    update_iter, reward1 = self.step(-1, self.player1, reward1)
-                    it += update_iter
-                else:
-                    update_iter, reward2 = self.step(1, self.player2, reward2)
-                    it += update_iter
+            player_index = -1
+            while self.playground.game_over() == False:
+                player_index, reward = self.step(self.player[player_index], reward)
             
             self.playground._draw_frame()
 
             if self.playground.game.winner == -1:
                 n_rounds_black_wins += 1
 
-        print ('Your win rate is', n_rounds_black_wins / n_round * 100, '%', end='\r')
+        print ('Your win rate is', n_rounds_black_wins / n_rounds * 100, '%')
 
 
     def run_agent(self, agent, reward, obs):
@@ -43,13 +37,14 @@ class Arena(object):
         reward = self.playground.act(action, event_type) # reward after an action
         return reward
 
-    def step(self, player_index, agent, reward):
+    def step(self, agent, reward):
+        player_index = -1 if agent.color == 'black' else 1
         obs = self.playground.get_game_state()
         while True:
             try:
-                reward = self.run_agent(agent, reward, obs)
-                if reward[player_index] != 0:
-                    return 1, reward
+                reward[player_index] = self.run_agent(agent, reward[player_index], obs)
+                if reward[player_index][player_index] != 0:
+                    return -1 * player_index, reward
 
             except (utils.ValueOutOfRange, utils.InvalidAction) as e:
                 # print("invalid action! retry!")
@@ -57,7 +52,7 @@ class Arena(object):
 
             except utils.NoAvailableAction:
                 # print("ignore black action")
-                return 2, reward
+                return player_index, reward
 
 
 if __name__ == "__main__":
