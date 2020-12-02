@@ -52,6 +52,7 @@ class Arena(object):
 
             except utils.NoAvailableAction:
                 # print("ignore black action")
+                self.playground._get_reward()
                 return player_index, reward
 
 
