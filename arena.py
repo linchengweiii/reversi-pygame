@@ -35,6 +35,7 @@ def main(play_ground, agent1, agent2, rounds):
                         pass
                     except utils.NoAvailableAction:
                         # print("ignore black action")
+                        play_ground._get_reward()
                         run_iter += 1
                         break
             else:
@@ -49,6 +50,7 @@ def main(play_ground, agent1, agent2, rounds):
                         pass
                     except utils.NoAvailableAction:
                         # print("ignore white action")
+                        play_ground._get_reward()
                         run_iter += 1
                         break
             run_iter += 1 
