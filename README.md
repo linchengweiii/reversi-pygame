@@ -3,6 +3,7 @@
 ```
 $ pip install pygame
 $ pip install tqdm
+$ pip install numpy
 ```
 ### Repo structure
 ```
