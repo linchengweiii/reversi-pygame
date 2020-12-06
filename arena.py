@@ -7,9 +7,10 @@ import utils
 import importlib
 import argparse
 from tqdm.auto import tqdm
+import copy
 
 def run_agent(agent: BaseAgent, reward: dict, obs: dict):
-    action, event_type = agent.step(reward, obs)
+    action, event_type = agent.step(copy.deepcopy(reward), copy.deepcopy(obs))
     reward = play_ground.act(action, event_type) # reward after an action
     return reward
 
