@@ -1,3 +1,18 @@
+# Leaderboard
+![leaderboard](leaderboard.png)
+
+# How to see leaderboard table? (win rate of every pairs)
+table[agent1][agent2] means the win rate of agent 1 when agent1 playing black and agent2 playing white.
+```
+import pandas as pd
+leaderboard_table = pd.read_pickle("leaderboard_table.pkl")
+```
+# How to see the leaderboard?
+```
+import pandas as pd
+leaderboard_win_ct = pd.read_pickle("leaderboard_win_ct.pkl")
+```
+
 # Reversi Game Project
 ### Prerequsite
 ```
@@ -10,13 +25,13 @@ $ pip install numpy
 .
 ├── README.md
 ├── agent
-│   └── base_agent.py
+│   └── base_agent.py
 ├── arena.py
 ├── board.py
 ├── env.py
 ├── font
-│   ├── LICENSE.txt
-│   └── OpenSans-Regular.ttf
+│   ├── LICENSE.txt
+│   └── OpenSans-Regular.ttf
 ├── pygamewrapper.py
 ├── reversi.py
 ├── reversi_board.py
@@ -74,9 +89,9 @@ For example:
     For example:
     ```
     ├── agent
-    │   ├── cwlin1998.py
+    │   ├── cwlin1998.py
     │   ├── cwlin1998_func/    # put your other files under this folder
-    │   └── base_agent.py 
+    │   └── base_agent.py 
     ```
     
     - **Your agent should not exceed the time limit (30s) per game, otherwise you lose the game.**
